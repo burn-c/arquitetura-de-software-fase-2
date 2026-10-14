@@ -56,15 +56,17 @@ export class Consulta implements ConsultaDTO {
   }
 }
 
-const consulta1 = new Consulta({
-  id: "con-001",
-  data: new Date("2023-06-15"),
-  pacienteId: "123",
-  medicoId: "med-001",
-  motivo: "Consulta cardiológica de rotina",
-  observacoes: "Paciente em jejum.",
-});
+if (import.meta.main) {
+  const consulta1 = new Consulta({
+    id: "con-001",
+    data: new Date("2023-06-15"),
+    pacienteId: "123",
+    medicoId: "med-001",
+    motivo: "Consulta cardiológica de rotina",
+    observacoes: "Paciente em jejum.",
+  });
 
-console.log(`Status inicial: ${consulta1.status}`);
-consulta1.realizar();
-console.log(`Status final: ${consulta1.status}`);
+  console.log(`Status inicial: ${consulta1.status}`);
+  consulta1.realizar();
+  console.log(`Status final: ${consulta1.status}`);
+}

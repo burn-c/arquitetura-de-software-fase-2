@@ -30,16 +30,18 @@ export class Exame implements ExameDTO {
   }
 }
 
-const exame1 = new Exame({
-  id: "exa-001",
-  tipo: "Eletrocardiograma",
-  resultado: "Normal",
-  data: new Date("2023-06-15"),
-  local: "Laboratório Central",
-  responsavel: "Dr. João",
-  pacienteId: "123",
-});
+if (import.meta.main) {
+  const exame1 = new Exame({
+    id: "exa-001",
+    tipo: "Eletrocardiograma",
+    resultado: "Normal",
+    data: new Date("2023-06-15"),
+    local: "Laboratório Central",
+    responsavel: "Dr. João",
+    pacienteId: "123",
+  });
 
-console.log(
-  `Exame ${exame1.tipo} (${exame1.resultado}) do paciente ${exame1.pacienteId} realizado em ${exame1.local}.`,
-);
+  console.log(
+    `Exame ${exame1.tipo} (${exame1.resultado}) do paciente ${exame1.pacienteId} realizado em ${exame1.local}.`,
+  );
+}

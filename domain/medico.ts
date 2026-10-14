@@ -54,19 +54,21 @@ export class Medico implements MedicoDTO {
   }
 }
 
-const medico1 = new Medico({
-  id: "med-001",
-  crm: "CRM-SP 123456",
-  nome: "Maria Santos",
-  especialidades: ["Cardiologia"],
-  telefone: "(11) 91234-5678",
-  horarioAtendimento: { dias: ["Segunda", "Quarta"], horario: "08:00-17:00" },
-});
+if (import.meta.main) {
+  const medico1 = new Medico({
+    id: "med-001",
+    crm: "CRM-SP 123456",
+    nome: "Maria Santos",
+    especialidades: ["Cardiologia"],
+    telefone: "(11) 91234-5678",
+    horarioAtendimento: { dias: ["Segunda", "Quarta"], horario: "08:00-17:00" },
+  });
 
-medico1.adicionarEspecialidade("Clínica Geral");
+  medico1.adicionarEspecialidade("Clínica Geral");
 
-console.log(`Dr(a). ${medico1.nome} (${medico1.crm})`);
-console.log(`Especialidades: ${medico1.especialidades.join(", ")}`);
-console.log(
-  `Atendimento: ${medico1.horarioAtendimento.dias.join(", ")} das ${medico1.horarioAtendimento.horario}`,
-);
+  console.log(`Dr(a). ${medico1.nome} (${medico1.crm})`);
+  console.log(`Especialidades: ${medico1.especialidades.join(", ")}`);
+  console.log(
+    `Atendimento: ${medico1.horarioAtendimento.dias.join(", ")} das ${medico1.horarioAtendimento.horario}`,
+  );
+}

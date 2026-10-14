@@ -64,16 +64,18 @@ export class Prontuario implements ProntuarioDTO {
   }
 }
 
-const prontuario1 = new Prontuario({
-  id: "pro-001",
-  pacienteId: "123",
-});
+if (import.meta.main) {
+  const prontuario1 = new Prontuario({
+    id: "pro-001",
+    pacienteId: "123",
+  });
 
-prontuario1.adicionarDiagnostico("Hipertensão");
-prontuario1.adicionarTratamento("Redução no consumo de sal");
-prontuario1.adicionarMedicamento("Captopril");
+  prontuario1.adicionarDiagnostico("Hipertensão");
+  prontuario1.adicionarTratamento("Redução no consumo de sal");
+  prontuario1.adicionarMedicamento("Captopril");
 
-console.log(`Prontuário ${prontuario1.id} do paciente ${prontuario1.pacienteId}:`);
-console.log(`Diagnósticos: ${prontuario1.diagnosticos.join(", ")}`);
-console.log(`Tratamentos: ${prontuario1.tratamentos.join(", ")}`);
-console.log(`Medicamentos: ${prontuario1.medicamentos.join(", ")}`);
+  console.log(`Prontuário ${prontuario1.id} do paciente ${prontuario1.pacienteId}:`);
+  console.log(`Diagnósticos: ${prontuario1.diagnosticos.join(", ")}`);
+  console.log(`Tratamentos: ${prontuario1.tratamentos.join(", ")}`);
+  console.log(`Medicamentos: ${prontuario1.medicamentos.join(", ")}`);
+}

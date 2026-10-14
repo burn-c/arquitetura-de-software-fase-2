@@ -99,41 +99,43 @@ class Paciente implements PacienteDTO {
   }
 }
 
-const paciente1 = new Paciente({
-  nome: "João Silva",
-  dataNasc: new Date("1990-05-15"),
-  historicoMedico: ["Hipertensão controlada", "Apendicectomia em 2010"],
-  alergias: ["Nenhuma alergia conhecida."],
-  endereço: "Rua das Flores, 123, São Paulo, SP",
-  telefone: "(11) 98765-4321",
-  email: "joao.silva@email.com",
-  contatoEmergencia: "(11) 98765-4321",
-  genero: "Masculino",
-  tipoSanguineo: "A+",
-  cpf: "123.456.789-00",
-  id: "123",
-});
+if (import.meta.main) {
+  const paciente1 = new Paciente({
+    nome: "João Silva",
+    dataNasc: new Date("1990-05-15"),
+    historicoMedico: ["Hipertensão controlada", "Apendicectomia em 2010"],
+    alergias: ["Nenhuma alergia conhecida."],
+    endereço: "Rua das Flores, 123, São Paulo, SP",
+    telefone: "(11) 98765-4321",
+    email: "joao.silva@email.com",
+    contatoEmergencia: "(11) 98765-4321",
+    genero: "Masculino",
+    tipoSanguineo: "A+",
+    cpf: "123.456.789-00",
+    id: "123",
+  });
 
-paciente1.agendarConsulta(
-  new Consulta({
-    id: "con-001",
-    data: new Date("2023-06-15"),
-    pacienteId: paciente1.id,
-    medicoId: "med-001",
-    motivo: "Consulta cardiológica de rotina",
-  }),
-);
+  paciente1.agendarConsulta(
+    new Consulta({
+      id: "con-001",
+      data: new Date("2023-06-15"),
+      pacienteId: paciente1.id,
+      medicoId: "med-001",
+      motivo: "Consulta cardiológica de rotina",
+    }),
+  );
 
-paciente1.adicionarExame(
-  new Exame({
-    id: "exa-001",
-    tipo: "Eletrocardiograma",
-    resultado: "Normal",
-    data: new Date("2023-06-15"),
-    local: "Laboratório Central",
-    responsavel: "Dr. João",
-    pacienteId: paciente1.id,
-  }),
-);
+  paciente1.adicionarExame(
+    new Exame({
+      id: "exa-001",
+      tipo: "Eletrocardiograma",
+      resultado: "Normal",
+      data: new Date("2023-06-15"),
+      local: "Laboratório Central",
+      responsavel: "Dr. João",
+      pacienteId: paciente1.id,
+    }),
+  );
 
-paciente1.adicionarEventoHistorico("Apendicectomia em 2010");
+  paciente1.adicionarEventoHistorico("Apendicectomia em 2010");
+}
