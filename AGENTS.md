@@ -44,7 +44,20 @@ docs/
 
 - **Linguagem:** TypeScript, ESM (`"type": "module"`).
 - **Gerenciador de pacotes:** pnpm (fixado via `devEngines`).
-- A modelagem de domínio segue as práticas de DDD usadas no curso:
+
+### Estrutura de Código
+
+- O modelo de domínio fica em `domain/`, com **um arquivo por entidade**
+  (ex.: `domain/paciente.ts`, `domain/consulta.ts`, `domain/medico.ts`).
+- Use a extensão `.ts` nos imports relativos de ESM (ex.:
+  `import { Consulta } from "./consulta.ts"`).
+- Referencie outras entidades por **ID** (ex.: `pacienteId`, `medicoId`) em vez
+  de objetos, evitando acoplamento e dependências circulares.
+- Cada arquivo termina com um pequeno **bloco de demonstração** executável.
+
+### Modelagem de Domínio
+
+A modelagem segue as práticas de DDD usadas no curso:
   - Encapsule estado com campos privados do ECMAScript (`#campo`).
   - Exponha coleções como `ReadonlyArray` por meio de getters que retornam cópias.
   - Aceite um único objeto DTO no construtor em vez de argumentos posicionais.
