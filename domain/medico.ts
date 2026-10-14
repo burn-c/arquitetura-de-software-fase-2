@@ -1,15 +1,19 @@
+export interface HorarioAtendimento {
+  dias: ReadonlyArray<string>;
+  horario: string;
+}
+
 interface MedicoDTO {
   id: string;
   crm: string;
   nome: string;
   especialidades: ReadonlyArray<string>;
   telefone: string;
-  horarioAtendimento: ReadonlyArray<string>;
+  horarioAtendimento: HorarioAtendimento;
 }
 
-type CriarMedicoDTO = Omit<MedicoDTO, "especialidades" | "horarioAtendimento"> & {
+type CriarMedicoDTO = Omit<MedicoDTO, "especialidades"> & {
   especialidades: string[];
-  horarioAtendimento: string[];
 };
 
 export class Medico implements MedicoDTO {
@@ -19,7 +23,7 @@ export class Medico implements MedicoDTO {
   telefone: string;
 
   #especialidades: string[];
-  #horarioAtendimento: string[];
+  #horarioAtendimento: HorarioAtendimento;
 
   constructor(dados: CriarMedicoDTO) {
     this.id = dados.id;
@@ -27,7 +31,10 @@ export class Medico implements MedicoDTO {
     this.nome = dados.nome;
     this.telefone = dados.telefone;
     this.#especialidades = dados.especialidades;
-    this.#horarioAtendimento = dados.horarioAtendimento;
+    this.#horarioAtendimento = {
+      dias: [...dados.horarioAtendimento.dias],
+      horario: dados.horarioAtendimento.horario,
+    };
   }
 
   adicionarEspecialidade(especialidade: string): void {
@@ -39,8 +46,11 @@ export class Medico implements MedicoDTO {
     return [...this.#especialidades];
   }
 
-  get horarioAtendimento(): ReadonlyArray<string> {
-    return [...this.#horarioAtendimento];
+  get horarioAtendimento(): HorarioAtendimento {
+    return {
+      dias: [...this.#horarioAtendimento.dias],
+      horario: this.#horarioAtendimento.horario,
+    };
   }
 }
 
@@ -50,11 +60,13 @@ const medico1 = new Medico({
   nome: "Maria Santos",
   especialidades: ["Cardiologia"],
   telefone: "(11) 91234-5678",
-  horarioAtendimento: ["Seg-Sex 08:00-17:00"],
+  horarioAtendimento: { dias: ["Segunda", "Quarta"], horario: "08:00-17:00" },
 });
 
 medico1.adicionarEspecialidade("Clínica Geral");
 
 console.log(`Dr(a). ${medico1.nome} (${medico1.crm})`);
 console.log(`Especialidades: ${medico1.especialidades.join(", ")}`);
-console.log(`Atendimento: ${medico1.horarioAtendimento.join(", ")}`);
+console.log(
+  `Atendimento: ${medico1.horarioAtendimento.dias.join(", ")} das ${medico1.horarioAtendimento.horario}`,
+);
