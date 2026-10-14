@@ -27,7 +27,7 @@ interface PacienteDTO {
 // Opção para o construtor: apenas os dados necessários para criar um paciente, sem métodos e listas de consultas/exames.
 type CriarPacienteDTO = Omit<PacienteDTO, "consultas" | "exames" | "agendarConsulta" | "adicionarExame">;
 
-class Paciente implements PacienteDTO {
+export class Paciente implements PacienteDTO {
   // 1. Declarar as propriedades obrigatoriamente
   id: string;
   cpf: string;
