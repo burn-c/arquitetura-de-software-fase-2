@@ -1,12 +1,5 @@
-export interface Consulta {
-  data: Date;
-  medico: string;
-}
-
-export interface Exame {
-  nomeExame: string;
-  resultado: string;
-}
+import { Consulta } from "./consulta.ts";
+import { Exame } from "./exame.ts";
 
 interface PacienteDTO {
   id: string;
@@ -74,20 +67,21 @@ class Paciente implements PacienteDTO {
 
   // 3. Métodos no corpo da classe (fora do constructor)
   agendarConsulta(consulta: Consulta): void {
-    this.#consultas.push(consulta);
+    const conflito = this.#consultas.some(
+      (c) => c.data.getTime() === consulta.data.getTime(),
+    );
 
-    const consultaNoMesmoHorario = this.#consultas.some((c) => c.data === consulta.data);
-
-    if (consultaNoMesmoHorario) {
+    if (conflito) {
       throw new Error("Paciente já possui uma consulta agendada neste horário.");
     }
 
-    console.log(`Consulta agendada para ${this.nome} em ${consulta.data.toLocaleDateString()} com o médico ${consulta.medico}.`);
+    this.#consultas.push(consulta);
+    console.log(`Consulta agendada para ${this.nome} em ${consulta.data.toLocaleDateString()}.`);
   }
 
   adicionarExame(exame: Exame): void {
     this.#exames.push(exame);
-    console.log(`Exame ${exame.nomeExame} adicionado para ${this.nome} com resultado: ${exame.resultado}.`);
+    console.log(`Exame ${exame.tipo} adicionado para ${this.nome} com resultado: ${exame.resultado}.`);
   }
 
   adicionarEventoHistorico(evento: string): void {
@@ -120,14 +114,26 @@ const paciente1 = new Paciente({
   id: "123",
 });
 
-paciente1.agendarConsulta({ 
-  data: new Date("2023-06-15"), 
-  medico: "Dr. João" 
-});
+paciente1.agendarConsulta(
+  new Consulta({
+    id: "con-001",
+    data: new Date("2023-06-15"),
+    pacienteId: paciente1.id,
+    medicoId: "med-001",
+    motivo: "Consulta cardiológica de rotina",
+  }),
+);
 
-paciente1.adicionarExame({ 
-  nomeExame: "Eletrocardiograma", 
-  resultado: "Normal" 
-});
+paciente1.adicionarExame(
+  new Exame({
+    id: "exa-001",
+    tipo: "Eletrocardiograma",
+    resultado: "Normal",
+    data: new Date("2023-06-15"),
+    local: "Laboratório Central",
+    responsavel: "Dr. João",
+    pacienteId: paciente1.id,
+  }),
+);
 
 paciente1.adicionarEventoHistorico("Apendicectomia em 2010");
