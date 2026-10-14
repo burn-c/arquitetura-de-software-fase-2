@@ -4,6 +4,9 @@
   "description": "Pós Graduação Full-Stack com IA, resumos e anotações do curso de Arquitetura de Software.",
   "main": "index.js",
   "scripts": {
+    "domain": "for f in domain/*.ts; do node \"$f\"; done",
+    "hospital": "node testHospital.ts",
+    "examples": "pnpm domain && pnpm hospital",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
