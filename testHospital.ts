@@ -1,8 +1,23 @@
+import { Address } from "./domain/address.ts";
 import { Consulta } from "./domain/consulta.ts";
+import { EmergencyContact } from "./domain/emergencyContact.ts";
 import { Exame } from "./domain/exame.ts";
 import { Medico } from "./domain/medico.ts";
 import { Paciente } from "./domain/paciente.ts";
 import { Prontuario } from "./domain/prontuario.ts";
+
+const emergencyContact1 = new EmergencyContact({
+  name: "Maria Silva",
+  phone: "(11) 88888-8888",
+});
+
+const address1 = new Address({
+  street: "Rua das Flores",
+  number: "123",
+  city: "São Paulo",
+  state: "SP",
+  zipCode: "01234-567",
+});
 
 const paciente1 = new Paciente({
   id: "1",
@@ -12,10 +27,10 @@ const paciente1 = new Paciente({
   genero: "Masculino",
   tipoSanguineo: "O+",
   alergias: ["Nenhuma"],
-  endereço: "Rua das Flores, 123",
+  endereço: address1,
   telefone: "(11) 99999-9999",
   email: "joao.silva@email.com",
-  contatoEmergencia: "(11) 88888-8888",
+  contatoEmergencia: emergencyContact1,
 });
 
 const medico1 = new Medico({
