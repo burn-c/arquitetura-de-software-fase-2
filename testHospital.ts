@@ -2,7 +2,7 @@ import { Address } from "./domain/address.ts";
 import { Consulta } from "./domain/consulta.ts";
 import { EmergencyContact } from "./domain/emergencyContact.ts";
 import { Exame } from "./domain/exame.ts";
-import { Medico } from "./domain/medico.ts";
+import { Doctor } from "./domain/doctor.ts";
 import { Paciente } from "./domain/paciente.ts";
 import { Prontuario } from "./domain/prontuario.ts";
 
@@ -35,23 +35,25 @@ const paciente1 = new Paciente({
   contatoEmergencia: emergencyContact1,
 });
 
-const medico1 = new Medico({
+const doctor1 = new Doctor({
   id: "101",
-  crm: "CRM/SP 123456",
-  nome: "Dr. Carlos",
-  especialidades: ["Cardiologia", "Clínica Geral"],
-  telefone: "(11) 77777-7777",
-  horarioAtendimento: { dias: ["Segunda", "Quarta"], horario: "14:00-18:00" },
+  rcm: "CRM/SP 123456",
+  name: "Dr. Carlos",
+  specialties: ["Cardiologia", "Clínica Geral"],
+  phone: "(11) 77777-7777",
 });
 
 const consulta1 = new Consulta({
   id: "201",
   data: new Date("2023-10-15"),
   pacienteId: paciente1.id,
-  medicoId: medico1.id,
+  medicoId: doctor1.id,
   motivo: "Dor no peito",
   observacoes: "Paciente relatou dor no peito após esforço físico.",
 });
+
+doctor1.addWorkingHours({ day: "Segunda", timeSlot: "08:00-12:00" });
+doctor1.addWorkingHours({ day: "Quarta", timeSlot: "08:00-12:00" });
 
 const exame1 = new Exame({
   id: "301",
@@ -94,6 +96,28 @@ console.table([
     Valor: `${paciente1.contatoEmergencia.name} – ${paciente1.contatoEmergencia.phone}`,
   },
 ]);
+
+console.log("Médico:");
+console.table([
+  { Campo: "ID", Valor: doctor1.id },
+  { Campo: "RCM", Valor: doctor1.rcm },
+  { Campo: "Nome", Valor: doctor1.name },
+  { Campo: "Especialidades", Valor: doctor1.specialties.join(", ") },
+  { Campo: "Telefone", Valor: doctor1.phone },
+  {
+    Campo: "Dias de Atendimento",
+    Valor: doctor1.listWorkingHours.hours.map((h) => h.day).join(", ") || "-",
+  },
+]);
+
+console.log("Horários de Atendimento:");
+console.table(
+  doctor1.listWorkingHours.hours.map((h, i) => ({
+    "#": i + 1,
+    Dia: h.day,
+    Horário: h.timeSlot,
+  })),
+);
 
 console.log("Consulta:");
 console.table([
