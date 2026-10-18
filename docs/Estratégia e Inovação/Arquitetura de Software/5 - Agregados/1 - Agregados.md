@@ -109,7 +109,7 @@ flowchart TD
 // domain/medicalRecord.ts — direção da refatoração: prontuário como objeto de valor.
 // Sem `id` e sem `patientId`: o acesso se dá pelo histórico do paciente.
 export class MedicalRecord {
-  #diagnoses: Diagnosis[];
+  #diagnoses: Diagnoses[];
   #treatments: Treatment[];
   #medications: Medication[];
 
