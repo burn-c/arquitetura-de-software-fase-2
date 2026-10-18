@@ -69,9 +69,9 @@ if (import.meta.main) {
   doctor1.addWorkingHours({ day: "Quarta", timeSlot: "14:00-18:00" });
 
   console.log(`Dr(a). ${doctor1.name} (${doctor1.rcm})`);
-  console.log(`Especialidades: ${doctor1.specialties.join(", ")}`);
+  console.log(`Specialties: ${doctor1.specialties.join(", ")}`);
   console.log(
-    `Atendimento: ${doctor1.listWorkingHours.hours
+    `Working hours: ${doctor1.listWorkingHours.hours
       .map((h) => `${h.day} ${h.timeSlot}`)
       .join(", ")}`,
   );
