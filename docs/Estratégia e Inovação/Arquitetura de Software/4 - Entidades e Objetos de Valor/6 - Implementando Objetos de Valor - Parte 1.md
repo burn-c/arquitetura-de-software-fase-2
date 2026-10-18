@@ -25,7 +25,7 @@ A partir desta aula, o código passa a adotar **nomes em inglês** — para **ar
 | Nome | `nome` | `name` |
 | Telefone | `telefone` | `phone` |
 
-> **Nota:** os objetos de valor desta aula já nascem com identificadores em inglês. As entidades existentes (`paciente`, `medico`, `consulta`...) ainda usam nomes em português — a migração completa será feita **progressivamente**.
+> **Nota:** os objetos de valor desta aula já nascem com identificadores em inglês. As demais entidades (`paciente`, `consulta`...) ainda usam nomes em português — a migração completa será feita **progressivamente** (na *Parte 2*, por exemplo, `medico` vira `Doctor`).
 
 ## O objeto de valor Address
 

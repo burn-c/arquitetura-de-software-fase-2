@@ -101,6 +101,8 @@ Esses objetos **já estavam dentro das entidades** e agora **saem** para ter sua
 
 Ilustração dos três objetos de valor no estilo DDD do repositório (`endereco.ts`, `contatoEmergencia.ts` e `horarioAtendimento.ts`): **construtor com um único DTO**, estado encapsulado em campos privados (`#campo`), **imutabilidade** (cópias + `Object.freeze`) e **igualdade por atributos**.
 
+> **Atualização (aulas de implementação):** nas notas *6 - Implementando Objetos de Valor - Parte 1* e *7 - Implementando Objetos de Valor - Parte 2* esses objetos passaram a usar **nomes em inglês** — `address.ts` (`Address`), `emergencyContact.ts` (`EmergencyContact`) e `workingHours.ts` (`WorkingHours`). O código abaixo mantém os nomes em **português** apenas para ilustrar o conceito desta aula.
+
 ```typescript
 // domain/endereco.ts — objeto de valor: definido apenas pelos atributos.
 interface EnderecoDTO {

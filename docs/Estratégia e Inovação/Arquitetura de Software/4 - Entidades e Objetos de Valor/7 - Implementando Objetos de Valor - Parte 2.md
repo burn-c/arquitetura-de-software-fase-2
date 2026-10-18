@@ -26,126 +26,166 @@ As horas **podem mudar**. Não é muito frequente — mas, em tese, é **mais fr
 - O médico **não atende** em determinado dia (por ser **feriado**, por exemplo);
 - O médico atende em **outra cidade** e vem apenas em **dias específicos**.
 
-Por isso, `addHours` e `removeHours` **não alteram** as entradas existentes: eles **sobrescrevem a lista**, produzindo uma **nova lista**. O objeto de valor continua sendo tratado como **imutável** — não ferimos a premissa "objetos de valor tendem a ser imutáveis".
+Por isso, `removeHours` **não altera** as entradas existentes: ele **sobrescreve a lista**, produzindo uma **nova lista** (via `filter`). O objeto de valor continua sendo tratado como **imutável** — não ferimos a premissa "objetos de valor tendem a ser imutáveis". Já `addHours` adiciona **um novo horário** à coleção, após garantir que ele ainda **não existe**.
 
-> Ponto-chave da aula: alterar um horário **não é mutar o objeto**, e sim **trocar a lista por uma nova** — remoção, por exemplo, é feita com `filter`, que devolve uma **nova coleção**.
+> Ponto-chave da aula: alterar um horário **não é mutar o objeto**, e sim **trocar a lista por uma nova** — a remoção, por exemplo, é feita com `filter`, que devolve uma **nova coleção**.
 
 ## A "API" do WorkingHours
 
 | Método | Papel |
 | --- | --- |
-| `addHours(day, timeSlot)` | **Adiciona** um horário (dia + intervalo) à lista. |
-| `removeHours(day, timeSlot)` | **Remove** o horário correspondente ao dia + intervalo informados. |
+| `addHours(data: HourDTO)` | **Adiciona** um horário (`day` + `timeSlot`) à lista. |
+| `removeHours(data: HourDTO)` | **Remove** o horário que combine `day` + `timeSlot` informados. |
 | `listHours()` | **Lista** os horários disponíveis para atendimento daquele médico. |
-| `equals(otherWorkingHours)` | **Compara** dois horários de atendimento (lista a lista). |
+| `equals(otherWorkingHours)` | **Compara** duas listas de horários, **independente da ordem**. |
 
-## Removendo com `filter`
+O `addHours` também protege contra **duplicidade**: se o par `day` + `timeSlot` já existir, ele **não adiciona de novo** e apenas avisa que o horário já está registrado.
 
-Na remoção, informamos **qual dia** e **qual intervalo** queremos tirar. Como pode haver mais de um intervalo no mesmo dia (de manhã e à tarde), a comparação precisa considerar **as duas coisas**. A lista original é sobrescrita com o resultado do filtro:
+## Removendo do conjunto
 
-- **Permanece** o horário cujo `day` for **diferente** do dia que queremos remover **ou** cujo `timeSlot` for diferente;
-- Em outras palavras: só sai exatamente a combinação **dia + intervalo** que pedimos para remover.
+Na remoção, informamos o `day` e o `timeSlot` que queremos tirar. Como pode haver mais de um intervalo no mesmo dia (de manhã e à tarde), a comparação precisa considerar **as duas coisas**: primeiro localizamos o **índice** do horário que casa com `day` + `timeSlot` (`findIndex`) e, em seguida, sobrescrevemos a lista com uma **nova lista** (`filter`) sem aquele índice.
 
-## `equals`: tamanho primeiro, depois campo a campo
+- Se o horário **não existir**, o método apenas avisa que **não foi encontrado**;
+- A lista original é sempre **substituída por uma nova** — reforçando a ideia de imutabilidade.
 
-Sendo um objeto de valor, o `WorkingHours` também implementa `equals`. A comparação segue uma estratégia eficiente:
+## `equals`: tamanho primeiro, depois cada horário
+
+Sendo um objeto de valor, o `WorkingHours` também implementa `equals`:
 
 1. Se o **tamanho** das listas for **diferente**, sabemos de imediato que os objetos são diferentes → retorna `false`.
-2. Se os tamanhos forem **iguais**, comparamos **objeto por objeto, campo por campo**, usando o **índice**: o `day` existente com o `day` do outro e o `timeSlot` existente com o `timeSlot` do outro.
+2. Se os tamanhos forem **iguais**, verificamos se **cada horário de uma lista existe na outra** — usando `every` combinado com `some`. A comparação é **independente da ordem** dos horários.
 
 ```mermaid
 flowchart TD
-    A["equals(outroWorkingHours)"] --> B{"Tamanhos das listas<br/>são iguais?"}
+    A["equals(otherWorkingHours)"] --> B{"Tamanhos das listas<br/>são iguais?"}
     B -->|não| C["return false"]
-    B -->|sim| D["every: compara<br/>day e timeSlot<br/>pelo índice"]
-    D --> E["true se todos<br/>forem iguais"]
+    B -->|sim| D["every: cada horário<br/>existe na outra lista (some)"]
+    D --> E["true se todos<br/>corresponderem"]
 ```
 
 ## Implementação — `workingHours.ts`
 
 ```typescript
 // domain/workingHours.ts — objeto de valor: lista de dias e intervalos.
-export interface Hour {
+export interface WorkingHoursDTO {
+  hours: Array<HourDTO>;
+}
+
+export interface HourDTO {
   day: string;
   timeSlot: string;
 }
 
-export class WorkingHours {
-  #hours: Hour[] = [];
+export class WorkingHours implements WorkingHoursDTO {
+  hours: HourDTO[];
 
   // O construtor nasce vazio de propósito: o médico vai preenchendo os
   // horários aos poucos, em vez de recebê-los todos de uma vez.
-  addHours(day: string, timeSlot: string): void {
-    this.#hours.push({ day, timeSlot });
-    console.log(`Horário adicionado: ${day} ${timeSlot}.`);
+  constructor() {
+    this.hours = [];
   }
 
-  removeHours(day: string, timeSlot: string): void {
-    // Sobrescreve a lista com uma NOVA lista (filter), mantendo a imutabilidade.
-    this.#hours = this.#hours.filter(
-      (hour) => hour.day !== day || hour.timeSlot !== timeSlot,
+  addHours(data: HourDTO): void {
+    const { day, timeSlot } = data;
+    const existingHour = this.hours.find(
+      (hour) => hour.day === day && hour.timeSlot === timeSlot,
     );
-    console.log(`Horário removido: ${day} ${timeSlot}.`);
+
+    if (existingHour) {
+      console.log(`O horário ${timeSlot} do dia ${day} já está registrado.`);
+      return;
+    }
+
+    this.hours.push({ day, timeSlot });
   }
 
-  listHours(): ReadonlyArray<Hour> {
-    return [...this.#hours];
+  removeHours(data: HourDTO): void {
+    const { day, timeSlot } = data;
+    const index = this.hours.findIndex(
+      (hour) => hour.day === day && hour.timeSlot === timeSlot,
+    );
+
+    if (index !== -1) {
+      // Substitui a lista por uma NOVA lista (filter).
+      this.hours = this.hours.filter((_, i) => i !== index);
+      console.log(`O horário ${timeSlot} do dia ${day} foi removido.`);
+    } else {
+      console.log(`O horário ${timeSlot} do dia ${day} não foi encontrado.`);
+    }
   }
 
-  equals(otherWorkingHours: WorkingHours): boolean {
-    // Tamanhos diferentes: já é o suficiente para concluir que são diferentes.
-    if (this.#hours.length !== otherWorkingHours.#hours.length) {
+  equals(other: WorkingHours): boolean {
+    if (this.hours.length !== other.hours.length) {
       return false;
     }
 
-    // Mesmo tamanho: compara campo por campo, pelo índice.
-    return this.#hours.every((hour, index) => {
-      const otherHour = otherWorkingHours.#hours[index];
-      return hour.day === otherHour.day && hour.timeSlot === otherHour.timeSlot;
+    // Cada horário de uma lista precisa existir na outra (ordem indiferente).
+    return this.hours.every((hour) =>
+      other.hours.some(
+        (otherHour) =>
+          otherHour.day === hour.day && otherHour.timeSlot === hour.timeSlot,
+      )
+    );
+  }
+
+  listHours(): Array<HourDTO> {
+    if (this.hours.length === 0) {
+      console.log("Nenhum horário registrado.");
+    }
+
+    console.log("Horários registrados:");
+    this.hours.forEach((hour) => {
+      console.log(`Dia: ${hour.day}, Horário: ${hour.timeSlot}`);
     });
+
+    return this.hours;
   }
 }
 ```
 
 ## Integrando ao `Doctor`
 
-Os métodos do objeto de valor são **repassados** ao médico, que passa a **delegar** para o `WorkingHours`. Com isso, o horário de atendimento **não é mais passado por parâmetro** no construtor do médico: ele nasce **vazio** (`new WorkingHours()`) e é preenchido aos poucos.
+Os métodos do objeto de valor são **repassados** ao médico, que passa a **delegar** para o `WorkingHours`. Com isso, o horário de atendimento **não é mais passado por parâmetro** no construtor do médico: ele nasce **vazio** (`new WorkingHours()`) e é preenchido aos poucos — sempre passando pelas regras do objeto de valor (inclusive a **checagem de duplicidade**).
 
 ```typescript
 // domain/doctor.ts (trecho)
-import { WorkingHours, type Hour } from "./workingHours.ts";
+import { type HourDTO, WorkingHours, type WorkingHoursDTO } from "./workingHours.ts";
 
-export class Doctor {
+export class Doctor implements DoctorDTO {
   id: string;
-  crm: string;
+  rcm: string;
   name: string;
   phone: string;
-  workingHours: WorkingHours;
 
   #specialties: string[];
+  #workingHours: WorkingHours;
 
-  constructor(data: DoctorDTO) {
+  constructor(data: CreateDoctorDTO) {
     this.id = data.id;
-    this.crm = data.crm;
+    this.rcm = data.rcm;
     this.name = data.name;
     this.phone = data.phone;
     this.#specialties = data.specialties;
 
     // O horário de atendimento nasce vazio.
-    this.workingHours = new WorkingHours();
+    this.#workingHours = new WorkingHours();
   }
 
-  // Delegação: o Doctor apenas repassa para o objeto de valor.
-  addWorkingHours(day: string, timeSlot: string): void {
-    this.workingHours.addHours(day, timeSlot);
+  get specialties(): ReadonlyArray<string> {
+    return [...this.#specialties];
   }
 
-  removeWorkingHours(day: string, timeSlot: string): void {
-    this.workingHours.removeHours(day, timeSlot);
+  // Delegação: o Doctor repassa para o objeto de valor WorkingHours.
+  addWorkingHours(data: HourDTO): void {
+    this.#workingHours.addHours(data);
   }
 
-  listWorkingHours(): ReadonlyArray<Hour> {
-    return this.workingHours.listHours();
+  removeWorkingHours(data: HourDTO): void {
+    this.#workingHours.removeHours(data);
+  }
+
+  get listWorkingHours(): WorkingHoursDTO {
+    return this.#workingHours;
   }
 }
 ```
@@ -154,26 +194,27 @@ export class Doctor {
 classDiagram
     class Doctor {
         +id
+        +rcm
         +name
         +phone
-        +workingHours
-        +addWorkingHours(day, timeSlot)
-        +removeWorkingHours(day, timeSlot)
-        +listWorkingHours()
+        +addWorkingHours(data)
+        +removeWorkingHours(data)
+        +listWorkingHours
     }
     class WorkingHours {
-        +addHours(day, timeSlot)
-        +removeHours(day, timeSlot)
+        +hours
+        +addHours(data)
+        +removeHours(data)
         +listHours()
         +equals(other) bool
     }
-    class Hour {
+    class HourDTO {
         +day
         +timeSlot
     }
 
     Doctor *-- WorkingHours : compõe
-    WorkingHours *-- Hour : contém
+    WorkingHours *-- HourDTO : contém
 ```
 
 ## Atualização de nomenclatura
@@ -187,7 +228,7 @@ Seguindo a adoção do **inglês** iniciada na Parte 1, a entidade `Medico` tamb
 | `nome` | `name` |
 | `especialidades` | `specialties` |
 | `telefone` | `phone` |
-| `crm` | `crm` (sigla mantida — Conselho Regional de Medicina) |
+| `crm` | `rcm` (campo do Conselho Regional de Medicina) |
 
 ## Testando no hospital
 
@@ -196,23 +237,23 @@ No `testHospital.ts`, passamos a **adicionar** horários ao médico em vez de in
 ```typescript
 // testHospital.ts (trecho)
 const doctor1 = new Doctor({
-  id: "med-001",
-  crm: "CRM-SP 123456",
-  name: "Maria Santos",
-  specialties: ["Cardiologia"],
-  phone: "(11) 91234-5678",
+  id: "101",
+  rcm: "CRM/SP 123456",
+  name: "Dr. Carlos",
+  specialties: ["Cardiologia", "Clínica Geral"],
+  phone: "(11) 77777-7777",
 });
 
-doctor1.addWorkingHours("Segunda", "14:00-18:00");
-doctor1.addWorkingHours("Quarta", "14:00-18:00");
+doctor1.addWorkingHours({ day: "Segunda", timeSlot: "08:00-12:00" });
+doctor1.addWorkingHours({ day: "Quarta", timeSlot: "08:00-12:00" });
 
 console.log(doctor1);
 ```
 
 ## Conclusão
 
-Fechamos a série de **objetos de valor** com o **`WorkingHours`** — o primeiro deles a lidar com uma **lista** e a expor comportamento de **adicionar**, **remover** e **listar** horários. Mesmo com essas operações, a imutabilidade é preservada: a lista é **sobrescrita por uma nova**, e não mutada. O `equals` compara primeiro o **tamanho** e depois **campo a campo**.
+Fechamos a série de **objetos de valor** com o **`WorkingHours`** — o primeiro deles a lidar com uma **lista** e a expor comportamento de **adicionar**, **remover** e **listar** horários. Mesmo com essas operações, a imutabilidade é preservada: a lista é **sobrescrita por uma nova**, e não mutada. O `equals` compara primeiro o **tamanho** e depois verifica, **horário a horário**, se as listas têm os mesmos itens (sem depender da ordem).
 
-O `WorkingHours` é referenciado pelo **`Doctor`** por **composição**, e o médico apenas **delega** as chamadas — o horário de atendimento deixou de ser parâmetro de construção.
+O `WorkingHours` é referenciado pelo **`Doctor`** por **composição**, e o médico **delega** para ele em `addWorkingHours` e `removeWorkingHours`, expondo ainda o getter `listWorkingHours` — o horário de atendimento deixou de ser parâmetro de construção.
 
 Na **próxima aula**, começamos a falar de **agregados**: como relacionar **entidades e objetos de valor** de uma forma melhor do que a que vimos fazendo até aqui. Até lá!
