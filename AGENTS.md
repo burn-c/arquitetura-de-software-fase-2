@@ -12,8 +12,10 @@ um curso de pós-graduação em Full-Stack com IA. O repositório combina:
 
 ## Convenções de Idioma
 
-- **Documentação e identificadores de código:** Português (acompanha o material
-  do curso, ex.: `paciente.ts`, `agendarConsulta`).
+- **Documentação e textos:** Português (acompanha o material do curso).
+- **Identificadores de código:** Inglês (arquivos, classes, atributos e
+  métodos), ex.: `patient.ts`, `scheduleConsultation`. A migração do domínio
+  para o inglês é progressiva e acompanha as aulas.
 - **Mensagens de commit:** Inglês (veja abaixo).
 - **`AGENTS.md` e arquivos de ferramentas:** Português.
 
@@ -47,11 +49,12 @@ docs/
 
 ### Estrutura de Código
 
-- O modelo de domínio fica em `domain/`, com **um arquivo por entidade**
-  (ex.: `domain/paciente.ts`, `domain/consulta.ts`, `domain/medico.ts`).
+- O modelo de domínio fica em `domain/`, com **um arquivo por entidade ou
+  objeto de valor** (ex.: `domain/patient.ts`, `domain/consultation.ts`,
+  `domain/workingHours.ts`).
 - Use a extensão `.ts` nos imports relativos de ESM (ex.:
-  `import { Consulta } from "./consulta.ts"`).
-- Referencie outras entidades por **ID** (ex.: `pacienteId`, `medicoId`) em vez
+  `import { Consultation } from "./consultation.ts"`).
+- Referencie outras entidades por **ID** (ex.: `patientId`, `doctorId`) em vez
   de objetos, evitando acoplamento e dependências circulares.
 - Cada arquivo termina com um pequeno **bloco de demonstração** executável.
 
