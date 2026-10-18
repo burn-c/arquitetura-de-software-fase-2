@@ -10,7 +10,7 @@ interface ConsultationDTO {
   notes?: string;
 }
 
-// Constructor option: status is optional and defaults to "scheduled".
+// Opção do construtor: o status é opcional e assume "scheduled" por padrão.
 type CreateConsultationDTO = Omit<ConsultationDTO, "status"> & {
   status?: ConsultationStatus;
 };

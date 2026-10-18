@@ -16,9 +16,10 @@ interface PatientDTO {
   email: string;
   emergencyContact: EmergencyContactDTO;
 
-  medicalHistory?: Array<string>; // Optional medical history: previous conditions described as strings.
+  // Histórico médico opcional: condições anteriores descritas como texto.
+  medicalHistory?: Array<string>;
 
-  // 1. The interface declares the collections as READ-ONLY from the outside.
+  // 1. A interface declara as coleções como SOMENTE LEITURA para o mundo externo.
   readonly consultations: ReadonlyArray<Consultation>;
   readonly exams: ReadonlyArray<Exam>;
 
@@ -26,14 +27,14 @@ interface PatientDTO {
   addExam(exam: Exam): void;
 }
 
-// Constructor option: only the data needed to create a patient, without methods and the consultation/exam collections.
+// Opção do construtor: apenas os dados necessários para criar um paciente, sem os métodos e sem as coleções de consultas/exames.
 type CreatePatientDTO = Omit<
   PatientDTO,
   "consultations" | "exams" | "scheduleConsultation" | "addExam"
 >;
 
 export class Patient implements PatientDTO {
-  // 1. Declare the properties explicitly.
+  // 1. Declare as propriedades explicitamente.
   id: string;
   cpf: string;
   name: string;
@@ -47,11 +48,11 @@ export class Patient implements PatientDTO {
   emergencyContact: EmergencyContactDTO;
   medicalHistory: Array<string>;
 
-  // Truly private properties, not accessible from outside the class.
+  // Propriedades realmente privadas, inacessíveis de fora da classe.
   #consultations: Consultation[] = [];
   #exams: Exam[] = [];
 
-  // 2. Constructor receiving an object (clean, no argument-order confusion).
+  // 2. Construtor recebendo um objeto (limpo, sem confusão na ordem dos argumentos).
   constructor(data: CreatePatientDTO) {
     this.id = data.id;
     this.cpf = data.cpf;
@@ -70,7 +71,7 @@ export class Patient implements PatientDTO {
     this.#exams = [];
   }
 
-  // 3. Methods in the class body (outside the constructor).
+  // 3. Métodos no corpo da classe (fora do construtor).
   scheduleConsultation(consultation: Consultation): void {
     const conflict = this.#consultations.some(
       (c) => c.date.getTime() === consultation.date.getTime(),
@@ -98,7 +99,7 @@ export class Patient implements PatientDTO {
     console.log(`Event added to ${this.name}'s medical history: ${event}`);
   }
 
-  // 4. Getters to access the private collections from outside, returning copies to prevent external mutation.
+  // 4. Getters para acessar as coleções privadas de fora, retornando cópias que impedem mutação externa.
   get consultations(): ReadonlyArray<Consultation> {
     return [...this.#consultations];
   }
