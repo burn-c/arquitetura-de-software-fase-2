@@ -78,7 +78,9 @@ export class Paciente implements PacienteDTO {
     }
 
     this.#consultas.push(consulta);
-    console.log(`Consulta agendada para ${this.nome} em ${consulta.data.toLocaleDateString()}.`);
+    console.log(
+      `Consulta agendada para ${this.nome} em ${consulta.data.toLocaleDateString("pt-BR", { timeZone: "UTC" })}.`,
+    );
   }
 
   adicionarExame(exame: Exame): void {
