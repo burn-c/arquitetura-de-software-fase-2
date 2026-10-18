@@ -1,12 +1,12 @@
 import { Address } from "./domain/address.ts";
-import { Consulta } from "./domain/consulta.ts";
+import { Consultation } from "./domain/consultation.ts";
 import { EmergencyContact } from "./domain/emergencyContact.ts";
-import { Exame } from "./domain/exame.ts";
+import { Exam } from "./domain/exam.ts";
 import { Doctor } from "./domain/doctor.ts";
-import { Paciente } from "./domain/paciente.ts";
-import { Prontuario } from "./domain/prontuario.ts";
+import { Patient } from "./domain/patient.ts";
+import { MedicalRecord } from "./domain/medicalRecord.ts";
 
-console.log("Bem-vindo ao Sistema de Gestão de Pacientes!");
+console.log("Welcome to the Patient Management System!");
 
 const emergencyContact1 = new EmergencyContact({
   name: "Maria Silva",
@@ -21,145 +21,148 @@ const address1 = new Address({
   zipCode: "01234-567",
 });
 
-const paciente1 = new Paciente({
+const patient1 = new Patient({
   id: "1",
   cpf: "123.456.789-00",
-  nome: "João Silva",
-  dataNasc: new Date("1990-01-01"),
-  genero: "Masculino",
-  tipoSanguineo: "O+",
-  alergias: ["Nenhuma"],
-  endereço: address1,
-  telefone: "(11) 99999-9999",
+  name: "João Silva",
+  birthDate: new Date("1990-01-01"),
+  gender: "Male",
+  bloodType: "O+",
+  allergies: ["None"],
+  address: address1,
+  phone: "(11) 99999-9999",
   email: "joao.silva@email.com",
-  contatoEmergencia: emergencyContact1,
+  emergencyContact: emergencyContact1,
 });
 
 const doctor1 = new Doctor({
   id: "101",
   rcm: "CRM/SP 123456",
   name: "Dr. Carlos",
-  specialties: ["Cardiologia", "Clínica Geral"],
+  specialties: ["Cardiology", "General Practice"],
   phone: "(11) 77777-7777",
 });
 
-const consulta1 = new Consulta({
+const consultation1 = new Consultation({
   id: "201",
-  data: new Date("2023-10-15"),
-  pacienteId: paciente1.id,
-  medicoId: doctor1.id,
-  motivo: "Dor no peito",
-  observacoes: "Paciente relatou dor no peito após esforço físico.",
+  date: new Date("2023-10-15"),
+  patientId: patient1.id,
+  doctorId: doctor1.id,
+  reason: "Chest pain",
+  notes: "Patient reported chest pain after physical exertion.",
 });
 
-doctor1.addWorkingHours({ day: "Segunda", timeSlot: "08:00-12:00" });
-doctor1.addWorkingHours({ day: "Quarta", timeSlot: "08:00-12:00" });
+doctor1.addWorkingHours({ day: "Monday", timeSlot: "08:00-12:00" });
+doctor1.addWorkingHours({ day: "Wednesday", timeSlot: "08:00-12:00" });
 
-const exame1 = new Exame({
+const exam1 = new Exam({
   id: "301",
-  tipo: "Hemograma",
-  resultado: "Normal",
-  data: new Date("2023-10-10"),
-  local: "Laboratório X",
-  responsavel: "Dr. Ana",
-  pacienteId: paciente1.id,
+  type: "Blood count",
+  result: "Normal",
+  date: new Date("2023-10-10"),
+  location: "Lab X",
+  responsible: "Dr. Ana",
+  patientId: patient1.id,
 });
 
-const prontuario1 = new Prontuario({ id: "401", pacienteId: paciente1.id });
+const medicalRecord1 = new MedicalRecord({ id: "401", patientId: patient1.id });
 
-paciente1.agendarConsulta(consulta1);
-paciente1.adicionarExame(exame1);
-prontuario1.adicionarDiagnostico("Hipertensão");
-prontuario1.adicionarTratamento("Redução no consumo de sal");
-prontuario1.adicionarMedicamento("Captopril");
+patient1.scheduleConsultation(consultation1);
+patient1.addExam(exam1);
+medicalRecord1.addDiagnosis("Hypertension");
+medicalRecord1.addTreatment("Reduced salt intake");
+medicalRecord1.addMedication("Captopril");
 
-console.log("Paciente:");
+console.log("Patient:");
 console.table([
-  { Campo: "ID", Valor: paciente1.id },
-  { Campo: "Nome", Valor: paciente1.nome },
-  { Campo: "CPF", Valor: paciente1.cpf },
+  { Field: "ID", Value: patient1.id },
+  { Field: "Name", Value: patient1.name },
+  { Field: "CPF", Value: patient1.cpf },
   {
-    Campo: "Nascimento",
-    Valor: paciente1.dataNasc.toLocaleDateString("pt-BR", { timeZone: "UTC" }),
+    Field: "Birth date",
+    Value: patient1.birthDate.toLocaleDateString("pt-BR", { timeZone: "UTC" }),
   },
-  { Campo: "Gênero", Valor: paciente1.genero },
-  { Campo: "Tipo Sanguíneo", Valor: paciente1.tipoSanguineo },
-  { Campo: "Telefone", Valor: paciente1.telefone },
-  { Campo: "E-mail", Valor: paciente1.email },
-  { Campo: "Alergias", Valor: paciente1.alergias.join(", ") },
+  { Field: "Gender", Value: patient1.gender },
+  { Field: "Blood type", Value: patient1.bloodType },
+  { Field: "Phone", Value: patient1.phone },
+  { Field: "E-mail", Value: patient1.email },
+  { Field: "Allergies", Value: patient1.allergies.join(", ") },
   {
-    Campo: "Endereço",
-    Valor: `${paciente1.endereço.street}, ${paciente1.endereço.number} – ${paciente1.endereço.city}/${paciente1.endereço.state} – CEP ${paciente1.endereço.zipCode}`,
+    Field: "Address",
+    Value: `${patient1.address.street}, ${patient1.address.number} – ${patient1.address.city}/${patient1.address.state} – ZIP ${patient1.address.zipCode}`,
   },
   {
-    Campo: "Contato de Emergência",
-    Valor: `${paciente1.contatoEmergencia.name} – ${paciente1.contatoEmergencia.phone}`,
+    Field: "Emergency contact",
+    Value: `${patient1.emergencyContact.name} – ${patient1.emergencyContact.phone}`,
   },
 ]);
 
-console.log("Médico:");
+console.log("Doctor:");
 console.table([
-  { Campo: "ID", Valor: doctor1.id },
-  { Campo: "RCM", Valor: doctor1.rcm },
-  { Campo: "Nome", Valor: doctor1.name },
-  { Campo: "Especialidades", Valor: doctor1.specialties.join(", ") },
-  { Campo: "Telefone", Valor: doctor1.phone },
+  { Field: "ID", Value: doctor1.id },
+  { Field: "RCM", Value: doctor1.rcm },
+  { Field: "Name", Value: doctor1.name },
+  { Field: "Specialties", Value: doctor1.specialties.join(", ") },
+  { Field: "Phone", Value: doctor1.phone },
   {
-    Campo: "Dias de Atendimento",
-    Valor: doctor1.listWorkingHours.hours.map((h) => h.day).join(", ") || "-",
+    Field: "Working days",
+    Value:
+      doctor1.listWorkingHours.hours.map((h) => h.day).join(", ") || "-",
   },
 ]);
 
-console.log("Horários de Atendimento:");
+console.log("Working hours:");
 console.table(
   doctor1.listWorkingHours.hours.map((h, i) => ({
     "#": i + 1,
-    Dia: h.day,
-    Horário: h.timeSlot,
+    Day: h.day,
+    "Time slot": h.timeSlot,
   })),
 );
 
-console.log("Consulta:");
+console.log("Consultation:");
 console.table([
   {
-    ID: consulta1.id,
-    Data: consulta1.data.toLocaleDateString("pt-BR", { timeZone: "UTC" }),
-    Paciente: consulta1.pacienteId,
-    Médico: consulta1.medicoId,
-    Motivo: consulta1.motivo,
-    Status: consulta1.status,
-    Observações: consulta1.observacoes ?? "-",
+    ID: consultation1.id,
+    Date: consultation1.date.toLocaleDateString("pt-BR", { timeZone: "UTC" }),
+    Patient: consultation1.patientId,
+    Doctor: consultation1.doctorId,
+    Reason: consultation1.reason,
+    Status: consultation1.status,
+    Notes: consultation1.notes ?? "-",
   },
 ]);
 
-console.log("Exame:");
+console.log("Exam:");
 console.table([
   {
-    ID: exame1.id,
-    Tipo: exame1.tipo,
-    Resultado: exame1.resultado,
-    Data: exame1.data.toLocaleDateString("pt-BR", { timeZone: "UTC" }),
-    Local: exame1.local,
-    Responsável: exame1.responsavel,
-    Paciente: exame1.pacienteId,
+    ID: exam1.id,
+    Type: exam1.type,
+    Result: exam1.result,
+    Date: exam1.date.toLocaleDateString("pt-BR", { timeZone: "UTC" }),
+    Location: exam1.location,
+    Responsible: exam1.responsible,
+    Patient: exam1.patientId,
   },
 ]);
 
-console.log(`Prontuário ${prontuario1.id} – Paciente ${prontuario1.pacienteId}`);
+console.log(
+  `Medical record ${medicalRecord1.id} – Patient ${medicalRecord1.patientId}`,
+);
 console.table([
-  ...prontuario1.diagnosticos.map((valor, i) => ({
-    Tipo: "Diagnóstico",
+  ...medicalRecord1.diagnoses.map((value, i) => ({
+    Type: "Diagnosis",
     "#": i + 1,
-    Valor: valor,
+    Value: value,
   })),
-  ...prontuario1.tratamentos.map((valor, i) => ({
-    Tipo: "Tratamento",
+  ...medicalRecord1.treatments.map((value, i) => ({
+    Type: "Treatment",
     "#": i + 1,
-    Valor: valor,
+    Value: value,
   })),
-  ...prontuario1.medicamentos.map((valor, i) => ({
-    Tipo: "Medicamento",
+  ...medicalRecord1.medications.map((value, i) => ({
+    Type: "Medication",
     "#": i + 1,
-    Valor: valor,
+    Value: value,
   })),
 ]);
