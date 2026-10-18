@@ -1,5 +1,8 @@
 import { Address } from "./domain/address.ts";
 import { Consultation } from "./domain/consultation.ts";
+import { Diagnoses } from "./domain/diagnosis.ts";
+import { Medication } from "./domain/medication.ts";
+import { Treatment } from "./domain/treatment.ts";
 import { EmergencyContact } from "./domain/emergencyContact.ts";
 import { Exam } from "./domain/exam.ts";
 import { Doctor } from "./domain/doctor.ts";
@@ -65,13 +68,17 @@ const exam1 = new Exam({
   patientId: patient1.id,
 });
 
-const medicalRecord1 = new MedicalRecord({ id: "401", patientId: patient1.id });
+const medicalRecord1 = new MedicalRecord();
 
 patient1.scheduleConsultation(consultation1);
 patient1.addExam(exam1);
-medicalRecord1.addDiagnosis("Hypertension");
-medicalRecord1.addTreatment("Reduced salt intake");
-medicalRecord1.addMedication("Captopril");
+medicalRecord1.addDiagnoses(new Diagnoses({ description: "Hypertension" }));
+medicalRecord1.addTreatment(
+  new Treatment({ description: "Reduced salt intake" }),
+);
+medicalRecord1.addMedication(
+  new Medication({ name: "Captopril", dosage: "25mg" }),
+);
 
 console.log("Patient:");
 console.table([
@@ -147,22 +154,22 @@ console.table([
 ]);
 
 console.log(
-  `Medical record ${medicalRecord1.id} – Patient ${medicalRecord1.patientId}`,
+  `Medical record – patient ${patient1.name}`,
 );
 console.table([
   ...medicalRecord1.diagnoses.map((value, i) => ({
-    Type: "Diagnosis",
+    Type: "Diagnoses",
     "#": i + 1,
-    Value: value,
+    Value: value.description,
   })),
   ...medicalRecord1.treatments.map((value, i) => ({
     Type: "Treatment",
     "#": i + 1,
-    Value: value,
+    Value: value.description,
   })),
   ...medicalRecord1.medications.map((value, i) => ({
     Type: "Medication",
     "#": i + 1,
-    Value: value,
+    Value: `${value.name} (${value.dosage})`,
   })),
 ]);
