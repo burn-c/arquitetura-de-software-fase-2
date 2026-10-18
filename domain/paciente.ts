@@ -1,4 +1,6 @@
+import type { AddressDTO } from "./address.ts";
 import { Consulta } from "./consulta.ts";
+import type { EmergencyContactDTO } from "./emergencyContact.ts";
 import { Exame } from "./exame.ts";
 
 interface PacienteDTO {
@@ -9,10 +11,10 @@ interface PacienteDTO {
   genero: "Masculino" | "Feminino";
   tipoSanguineo: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   alergias: Array<string>;
-  endereço: string;
+  endereço: AddressDTO;
   telefone: string;
   email: string;
-  contatoEmergencia: string;
+  contatoEmergencia: EmergencyContactDTO;
 
   historicoMedico?: Array<string>; // Histórico médico opcional, pode ser uma lista de strings descrevendo condições médicas anteriores
 
@@ -34,10 +36,10 @@ export class Paciente implements PacienteDTO {
   nome: string;
   dataNasc: Date;
   alergias: Array<string>;
-  endereço: string;
+  endereço: AddressDTO;
   telefone: string;
   email: string;
-  contatoEmergencia: string;
+  contatoEmergencia: EmergencyContactDTO;
   genero: "Masculino" | "Feminino";
   tipoSanguineo: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   historicoMedico: Array<string>;
@@ -105,10 +107,19 @@ if (import.meta.main) {
     dataNasc: new Date("1990-05-15"),
     historicoMedico: ["Hipertensão controlada", "Apendicectomia em 2010"],
     alergias: ["Nenhuma alergia conhecida."],
-    endereço: "Rua das Flores, 123, São Paulo, SP",
+    endereço: {
+      street: "Rua das Flores",
+      number: "123",
+      city: "São Paulo",
+      state: "SP",
+      zipCode: "01234-567",
+    },
     telefone: "(11) 98765-4321",
     email: "joao.silva@email.com",
-    contatoEmergencia: "(11) 98765-4321",
+    contatoEmergencia: {
+      name: "Maria Silva",
+      phone: "(11) 98765-4321"
+    },
     genero: "Masculino",
     tipoSanguineo: "A+",
     cpf: "123.456.789-00",
