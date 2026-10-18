@@ -6,6 +6,8 @@ import { Medico } from "./domain/medico.ts";
 import { Paciente } from "./domain/paciente.ts";
 import { Prontuario } from "./domain/prontuario.ts";
 
+console.log("Bem-vindo ao Sistema de Gestão de Pacientes!");
+
 const emergencyContact1 = new EmergencyContact({
   name: "Maria Silva",
   phone: "(11) 88888-8888",
@@ -69,4 +71,71 @@ prontuario1.adicionarDiagnostico("Hipertensão");
 prontuario1.adicionarTratamento("Redução no consumo de sal");
 prontuario1.adicionarMedicamento("Captopril");
 
-console.log(consulta1);
+console.log("Paciente:");
+console.table([
+  { Campo: "ID", Valor: paciente1.id },
+  { Campo: "Nome", Valor: paciente1.nome },
+  { Campo: "CPF", Valor: paciente1.cpf },
+  {
+    Campo: "Nascimento",
+    Valor: paciente1.dataNasc.toLocaleDateString("pt-BR", { timeZone: "UTC" }),
+  },
+  { Campo: "Gênero", Valor: paciente1.genero },
+  { Campo: "Tipo Sanguíneo", Valor: paciente1.tipoSanguineo },
+  { Campo: "Telefone", Valor: paciente1.telefone },
+  { Campo: "E-mail", Valor: paciente1.email },
+  { Campo: "Alergias", Valor: paciente1.alergias.join(", ") },
+  {
+    Campo: "Endereço",
+    Valor: `${paciente1.endereço.street}, ${paciente1.endereço.number} – ${paciente1.endereço.city}/${paciente1.endereço.state} – CEP ${paciente1.endereço.zipCode}`,
+  },
+  {
+    Campo: "Contato de Emergência",
+    Valor: `${paciente1.contatoEmergencia.name} – ${paciente1.contatoEmergencia.phone}`,
+  },
+]);
+
+console.log("Consulta:");
+console.table([
+  {
+    ID: consulta1.id,
+    Data: consulta1.data.toLocaleDateString("pt-BR", { timeZone: "UTC" }),
+    Paciente: consulta1.pacienteId,
+    Médico: consulta1.medicoId,
+    Motivo: consulta1.motivo,
+    Status: consulta1.status,
+    Observações: consulta1.observacoes ?? "-",
+  },
+]);
+
+console.log("Exame:");
+console.table([
+  {
+    ID: exame1.id,
+    Tipo: exame1.tipo,
+    Resultado: exame1.resultado,
+    Data: exame1.data.toLocaleDateString("pt-BR", { timeZone: "UTC" }),
+    Local: exame1.local,
+    Responsável: exame1.responsavel,
+    Paciente: exame1.pacienteId,
+  },
+]);
+
+console.log(`Prontuário ${prontuario1.id} – Paciente ${prontuario1.pacienteId}`);
+console.table([
+  ...prontuario1.diagnosticos.map((valor, i) => ({
+    Tipo: "Diagnóstico",
+    "#": i + 1,
+    Valor: valor,
+  })),
+  ...prontuario1.tratamentos.map((valor, i) => ({
+    Tipo: "Tratamento",
+    "#": i + 1,
+    Valor: valor,
+  })),
+  ...prontuario1.medicamentos.map((valor, i) => ({
+    Tipo: "Medicamento",
+    "#": i + 1,
+    Valor: valor,
+  })),
+]);
