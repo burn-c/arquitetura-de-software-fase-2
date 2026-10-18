@@ -62,7 +62,7 @@ Lida com as **entidades, as regras de negócio e a lógica central do programa**
 
 - No **foco único no negócio**, exemplos de regras: *"um paciente não pode agendar duas consultas no mesmo horário"* — afinal, não é possível estar em dois lugares ao mesmo tempo nem ser atendido duas vezes simultaneamente.
 - No sistema hospitalar, contém os conceitos centrais: **paciente, consulta, exame**.
-- A regra pode ser implementada dentro da entidade, como `Paciente`, ou extraída para uma classe/objeto dedicado.
+- A regra pode ser implementada dentro da entidade, como `Patient`, ou extraída para uma classe/objeto dedicado.
 - É importante que permaneça **isolado da camada de infraestrutura**.
 
 ### Infraestrutura
@@ -102,7 +102,7 @@ sequenceDiagram
 
     U->>P: preenche formulário de agendamento
     P->>A: envia dados
-    A->>D: agendarConsulta(paciente, data, médico)
+    A->>D: scheduleConsultation(patient, date, doctor)
     D->>D: valida regra (sem conflito de horário)
     D-->>A: validação OK
     A->>I: persiste consulta
@@ -126,28 +126,28 @@ flowchart LR
 
 ### Exemplo de regra de negócio no domínio
 
-Ilustração da regra *"um paciente não pode agendar duas consultas no mesmo horário"* implementada dentro da entidade de domínio (inspirado no `paciente.ts`):
+Ilustração da regra *"um paciente não pode agendar duas consultas no mesmo horário"* implementada dentro da entidade de domínio (inspirado no `patient.ts`):
 
 ```typescript
-class Paciente {
-  #consultas: Consulta[] = [];
+class Patient {
+  #consultations: Consultation[] = [];
 
-  agendarConsulta(data: Date, medico: string): void {
-    const conflito = this.#consultas.some(
-      (c) => c.data.getTime() === data.getTime(),
+  scheduleConsultation(consultation: Consultation): void {
+    const conflict = this.#consultations.some(
+      (c) => c.date.getTime() === consultation.date.getTime(),
     );
 
-    if (conflito) {
+    if (conflict) {
       throw new Error(
-        "Paciente já possui uma consulta agendada neste horário.",
+        "Patient already has a consultation scheduled at this time.",
       );
     }
 
-    this.#consultas.push({ data, medico });
+    this.#consultations.push(consultation);
   }
 
-  get consultas(): ReadonlyArray<Consulta> {
-    return [...this.#consultas];
+  get consultations(): ReadonlyArray<Consultation> {
+    return [...this.#consultations];
   }
 }
 ```

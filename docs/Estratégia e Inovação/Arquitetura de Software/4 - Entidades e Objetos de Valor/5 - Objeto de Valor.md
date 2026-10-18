@@ -6,7 +6,7 @@ Seguimos no **Domain-Driven Design (DDD)**, tratando os **elementos do modelo**.
 
 Um detalhe interessante: alguns objetos de valor **já apareceram enquanto implementávamos as entidades**. Naquele momento, algo como um endereço "aparentemente poderia ser outra classe, quem sabe". Muito do trabalho em DDD é **implementar e redescobrir** esses conceitos — e, conforme redescobrimos, levamos a descoberta ao **especialista de domínio** para validar se ela faz sentido. Se fizer, damos **um passinho atrás**, incrementamos o modelo atual e o **alinhamos com o domínio** como um todo.
 
-Partimos do sistema já implementado nas aulas passadas, com suas entidades básicas, e agora vamos incrementá-lo com os objetos de valor identificados em **Médico**, **Paciente** e **Consulta**.
+Partimos do sistema já implementado nas aulas passadas, com suas entidades básicas, e agora vamos incrementá-lo com os objetos de valor identificados em **Doctor**, **Patient** e **Consultation**.
 
 ```mermaid
 flowchart LR
@@ -23,20 +23,20 @@ Ao contrário das entidades, os **objetos de valor** são objetos que **não pos
 - Um objeto de valor é definido **unicamente por meio dos seus atributos**.
 - **Dois objetos de valor são iguais se todos os seus atributos forem iguais.**
 
-Compare com a entidade `Paciente`: posso ter **dois pacientes homônimos**, com o mesmo nome, a mesma data de nascimento e a mesma data de entrada no hospital — ainda assim, **são pessoas distintas**. Isso **não** se aplica ao objeto de valor.
+Compare com a entidade `Patient`: posso ter **dois pacientes homônimos**, com o mesmo nome, a mesma data de nascimento e a mesma data de entrada no hospital — ainda assim, **são pessoas distintas**. Isso **não** se aplica ao objeto de valor.
 
-O exemplo clássico no nosso contexto hospitalar é o **Endereço**:
+O exemplo clássico no nosso contexto hospitalar é o **Address**:
 
 - Dois endereços com os **mesmos atributos** (mesma rua, mesmo número, mesmo bairro, mesma cidade, mesmo CEP) **são o mesmo endereço** — a mesma casa, o mesmo apartamento.
 - Ainda assim, esse mesmo endereço pode **pertencer a entidades diferentes**. Se você e seu cônjuge recebem tratamento no mesmo hospital, ambos possuem **o mesmo endereço**, mas **são pessoas diferentes**.
 
 ```mermaid
 flowchart LR
-    subgraph VO["Endereço (Objeto de Valor)"]
-        E["rua, número, bairro,<br/>cidade, estado, CEP<br/>(sem identidade própria)"]
+    subgraph VO["Address (Objeto de Valor)"]
+        E["street, number, city,<br/>state, zipCode<br/>(sem identidade própria)"]
     end
-    P1["Paciente A"]
-    P2["Paciente B<br/>(mesma casa)"]
+    P1["Patient A"]
+    P2["Patient B<br/>(mesma casa)"]
 
     P1 -->|possui| VO
     P2 -->|possui o mesmo| VO
@@ -78,17 +78,17 @@ A partir da implementação das entidades básicas, chegamos a três objetos de 
 
 | Objeto de Valor | Atributos | Associado a | Observações |
 | --- | --- | --- | --- |
-| **Endereço** | rua, número, bairro, cidade, estado, CEP | `Paciente` | Poderia existir também para clínica ou médico, mas isso é **detalhe de implementação** que depende do contexto. |
-| **Contato de Emergência** | nome + telefone | `Paciente` | Duas características bem definidas; dificilmente o paciente tem **diversos** contatos de emergência. |
-| **Horário de Atendimento** | dias da semana + horários (tuplas) | `Médico` | Ex.: atende na **segunda das 14h às 18h** e na **terça das 8h às 12h**. |
+| **Address** | street, number, city, state, zipCode | `Patient` | Poderia existir também para clínica ou médico, mas isso é **detalhe de implementação** que depende do contexto. |
+| **EmergencyContact** | name + phone | `Patient` | Duas características bem definidas; dificilmente o paciente tem **diversos** contatos de emergência. |
+| **WorkingHours** | dias da semana + horários (tuplas) | `Doctor` | Ex.: atende na **segunda das 14h às 18h** e na **terça das 8h às 12h**. |
 
 ```mermaid
 flowchart TD
-    P["Paciente<br/>(Entidade)"]
-    M["Médico<br/>(Entidade)"]
-    E["Endereço<br/>(Objeto de Valor)"]
-    CE["Contato de Emergência<br/>(Objeto de Valor)"]
-    HA["Horário de Atendimento<br/>(Objeto de Valor)"]
+    P["Patient<br/>(Entidade)"]
+    M["Doctor<br/>(Entidade)"]
+    E["Address<br/>(Objeto de Valor)"]
+    CE["EmergencyContact<br/>(Objeto de Valor)"]
+    HA["WorkingHours<br/>(Objeto de Valor)"]
 
     P -->|composto por| E
     P -->|composto por| CE
@@ -99,146 +99,135 @@ Esses objetos **já estavam dentro das entidades** e agora **saem** para ter sua
 
 ## Exemplo de objeto de valor (código)
 
-Ilustração dos três objetos de valor no estilo DDD do repositório (`endereco.ts`, `contatoEmergencia.ts` e `horarioAtendimento.ts`): **construtor com um único DTO**, estado encapsulado em campos privados (`#campo`), **imutabilidade** (cópias + `Object.freeze`) e **igualdade por atributos**.
+Ilustração dos três objetos de valor no estilo DDD do repositório (`address.ts`, `emergencyContact.ts` e `workingHours.ts`): **construtor com um único DTO**, estado encapsulado em campos privados (`#campo`), **imutabilidade** (cópias + `Object.freeze`) e **igualdade por atributos**.
 
-> **Atualização (aulas de implementação):** nas notas *6 - Implementando Objetos de Valor - Parte 1* e *7 - Implementando Objetos de Valor - Parte 2* esses objetos passaram a usar **nomes em inglês** — `address.ts` (`Address`), `emergencyContact.ts` (`EmergencyContact`) e `workingHours.ts` (`WorkingHours`). O código abaixo mantém os nomes em **português** apenas para ilustrar o conceito desta aula.
+> **Implementação:** nas aulas seguintes esses objetos ganham implementação concreta (`address.ts`, `emergencyContact.ts` e `workingHours.ts`). Aqui o foco é o conceito.
 
 ```typescript
-// domain/endereco.ts — objeto de valor: definido apenas pelos atributos.
-interface EnderecoDTO {
-  logradouro: string;
-  numero: string;
-  bairro: string;
-  cidade: string;
-  estado: string;
-  cep: string;
+// domain/address.ts — objeto de valor: definido apenas pelos atributos.
+interface AddressDTO {
+  street: string;
+  number: string;
+  city: string;
+  state: string;
+  zipCode: string;
 }
 
-export class Endereco {
-  #logradouro: string;
-  #numero: string;
-  #bairro: string;
-  #cidade: string;
-  #estado: string;
-  #cep: string;
+export class Address {
+  #street: string;
+  #number: string;
+  #city: string;
+  #state: string;
+  #zipCode: string;
 
-  constructor(dados: EnderecoDTO) {
-    this.#logradouro = dados.logradouro;
-    this.#numero = dados.numero;
-    this.#bairro = dados.bairro;
-    this.#cidade = dados.cidade;
-    this.#estado = dados.estado;
-    this.#cep = dados.cep;
+  constructor(data: AddressDTO) {
+    this.#street = data.street;
+    this.#number = data.number;
+    this.#city = data.city;
+    this.#state = data.state;
+    this.#zipCode = data.zipCode;
 
     // Imutável: criado e substituído por inteiro, nunca alterado.
     Object.freeze(this);
   }
 
-  get logradouro(): string {
-    return this.#logradouro;
+  get street(): string {
+    return this.#street;
   }
 
-  get numero(): string {
-    return this.#numero;
+  get number(): string {
+    return this.#number;
   }
 
-  get bairro(): string {
-    return this.#bairro;
+  get city(): string {
+    return this.#city;
   }
 
-  get cidade(): string {
-    return this.#cidade;
+  get state(): string {
+    return this.#state;
   }
 
-  get estado(): string {
-    return this.#estado;
-  }
-
-  get cep(): string {
-    return this.#cep;
+  get zipCode(): string {
+    return this.#zipCode;
   }
 
   // Dois objetos de valor são iguais se todos os atributos forem iguais.
-  equals(outro: Endereco): boolean {
+  equals(other: Address): boolean {
     return (
-      this.#logradouro === outro.#logradouro &&
-      this.#numero === outro.#numero &&
-      this.#bairro === outro.#bairro &&
-      this.#cidade === outro.#cidade &&
-      this.#estado === outro.#estado &&
-      this.#cep === outro.#cep
+      this.#street === other.#street &&
+      this.#number === other.#number &&
+      this.#city === other.#city &&
+      this.#state === other.#state &&
+      this.#zipCode === other.#zipCode
     );
   }
 
   toString(): string {
-    return `${this.#logradouro}, ${this.#numero} - ${this.#bairro}, ${this.#cidade}/${this.#estado} - ${this.#cep}`;
+    return `${this.#street}, ${this.#number} - ${this.#city}/${this.#state} - ${this.#zipCode}`;
   }
 }
 ```
 
 ```typescript
-// domain/contatoEmergencia.ts — nome + telefone, nada além disso.
-interface ContatoEmergenciaDTO {
-  nome: string;
-  telefone: string;
+// domain/emergencyContact.ts — nome + telefone, nada além disso.
+interface EmergencyContactDTO {
+  name: string;
+  phone: string;
 }
 
-export class ContatoEmergencia {
-  #nome: string;
-  #telefone: string;
+export class EmergencyContact {
+  #name: string;
+  #phone: string;
 
-  constructor(dados: ContatoEmergenciaDTO) {
-    this.#nome = dados.nome;
-    this.#telefone = dados.telefone;
+  constructor(data: EmergencyContactDTO) {
+    this.#name = data.name;
+    this.#phone = data.phone;
 
     Object.freeze(this);
   }
 
-  get nome(): string {
-    return this.#nome;
+  get name(): string {
+    return this.#name;
   }
 
-  get telefone(): string {
-    return this.#telefone;
+  get phone(): string {
+    return this.#phone;
   }
 
-  equals(outro: ContatoEmergencia): boolean {
-    return this.#nome === outro.#nome && this.#telefone === outro.#telefone;
+  equals(other: EmergencyContact): boolean {
+    return this.#name === other.#name && this.#phone === other.#phone;
   }
 }
 ```
 
 ```typescript
-// domain/horarioAtendimento.ts — dias e horários (tuplas) do médico.
-export interface JanelaAtendimento {
-  dia: string; // ex.: "Segunda"
-  inicio: string; // ex.: "14:00"
-  fim: string; // ex.: "18:00"
+// domain/workingHours.ts — dias e horários (tuplas) do médico.
+export interface HourDTO {
+  day: string; // ex.: "Segunda"
+  timeSlot: string; // ex.: "14:00-18:00"
 }
 
-export class HorarioAtendimento {
-  #janelas: ReadonlyArray<JanelaAtendimento>;
+export class WorkingHours {
+  #hours: ReadonlyArray<HourDTO>;
 
-  constructor(janelas: ReadonlyArray<JanelaAtendimento>) {
-    // Copia e congela as janelas para preservar a imutabilidade.
-    this.#janelas = Object.freeze(janelas.map((janela) => Object.freeze({ ...janela })));
+  constructor(hours: ReadonlyArray<HourDTO> = []) {
+    // Copia e congela os horários para preservar a imutabilidade.
+    this.#hours = Object.freeze(hours.map((hour) => Object.freeze({ ...hour })));
 
     Object.freeze(this);
   }
 
-  get janelas(): ReadonlyArray<JanelaAtendimento> {
-    return [...this.#janelas];
+  get hours(): ReadonlyArray<HourDTO> {
+    return [...this.#hours];
   }
 
-  equals(outro: HorarioAtendimento): boolean {
+  equals(other: WorkingHours): boolean {
     return (
-      this.#janelas.length === outro.#janelas.length &&
-      this.#janelas.every((janela, indice) => {
-        const outra = outro.#janelas[indice];
+      this.#hours.length === other.#hours.length &&
+      this.#hours.every((hour, index) => {
+        const otherHour = other.#hours[index];
         return (
-          janela.dia === outra.dia &&
-          janela.inicio === outra.inicio &&
-          janela.fim === outra.fim
+          hour.day === otherHour.day && hour.timeSlot === otherHour.timeSlot
         );
       })
     );
@@ -249,94 +238,90 @@ export class HorarioAtendimento {
 Agora as entidades **referenciam esses objetos por composição** — as propriedades que antes eram `string` soltas passam a ser objetos de valor:
 
 ```typescript
-// domain/paciente.ts (trecho) — composição com objetos de valor.
-import { ContatoEmergencia } from "./contatoEmergencia.ts";
-import { Endereco } from "./endereco.ts";
+// domain/patient.ts (trecho) — composição com objetos de valor.
+import { EmergencyContact } from "./emergencyContact.ts";
+import { Address } from "./address.ts";
 
-interface CriarPacienteDTO {
-  nome: string;
-  dataNasc: Date;
-  endereco: Endereco;
-  contatoEmergencia: ContatoEmergencia;
+interface CreatePatientDTO {
+  name: string;
+  birthDate: Date;
+  address: Address;
+  emergencyContact: EmergencyContact;
 }
 
-export class Paciente {
-  #nome: string;
-  #dataNasc: Date;
-  #endereco: Endereco;
-  #contatoEmergencia: ContatoEmergencia;
+export class Patient {
+  #name: string;
+  #birthDate: Date;
+  #address: Address;
+  #emergencyContact: EmergencyContact;
 
-  constructor(dados: CriarPacienteDTO) {
-    this.#nome = dados.nome;
-    this.#dataNasc = dados.dataNasc;
-    this.#endereco = dados.endereco;
-    this.#contatoEmergencia = dados.contatoEmergencia;
+  constructor(data: CreatePatientDTO) {
+    this.#name = data.name;
+    this.#birthDate = data.birthDate;
+    this.#address = data.address;
+    this.#emergencyContact = data.emergencyContact;
   }
 
-  get endereco(): Endereco {
-    return this.#endereco;
+  get address(): Address {
+    return this.#address;
   }
 
   // "Mudar de endereço" = substituir o objeto antigo por inteiro.
-  mudarEndereco(novoEndereco: Endereco): void {
-    this.#endereco = novoEndereco;
+  changeAddress(newAddress: Address): void {
+    this.#address = newAddress;
   }
 }
 
 // O mesmo endereço pode pertencer a entidades (pacientes) diferentes.
-const enderecoCompartilhado = new Endereco({
-  logradouro: "Rua das Flores",
-  numero: "123",
-  bairro: "Centro",
-  cidade: "São Paulo",
-  estado: "SP",
-  cep: "01000-000",
+const sharedAddress = new Address({
+  street: "Rua das Flores",
+  number: "123",
+  city: "São Paulo",
+  state: "SP",
+  zipCode: "01000-000",
 });
 
-const copiaExata = new Endereco({
-  logradouro: "Rua das Flores",
-  numero: "123",
-  bairro: "Centro",
-  cidade: "São Paulo",
-  estado: "SP",
-  cep: "01000-000",
+const exactCopy = new Address({
+  street: "Rua das Flores",
+  number: "123",
+  city: "São Paulo",
+  state: "SP",
+  zipCode: "01000-000",
 });
 
-console.log(enderecoCompartilhado.equals(copiaExata)); // true — mesmo objeto de valor
+console.log(sharedAddress.equals(exactCopy)); // true — mesmo objeto de valor
 ```
 
 ```mermaid
 classDiagram
-    class Endereco {
-        +logradouro
-        +numero
-        +bairro
-        +cidade
-        +estado
-        +cep
-        +equals(outro) bool
+    class Address {
+        +street
+        +number
+        +city
+        +state
+        +zipCode
+        +equals(other) bool
     }
-    class ContatoEmergencia {
-        +nome
-        +telefone
-        +equals(outro) bool
+    class EmergencyContact {
+        +name
+        +phone
+        +equals(other) bool
     }
-    class JanelaAtendimento {
-        +dia
-        +inicio
-        +fim
+    class HourDTO {
+        +day
+        +timeSlot
     }
-    class HorarioAtendimento {
-        +janelas
-        +equals(outro) bool
+    class WorkingHours {
+        +hours
+        +equals(other) bool
     }
-    class Paciente
-    class Medico
+    class Patient
+    class Doctor
 
-    Paciente *-- Endereco : compõe
-    Paciente *-- ContatoEmergencia : compõe
-    Medico *-- HorarioAtendimento : compõe
-    HorarioAtendimento *-- JanelaAtendimento : contém
+    Patient *-- Address : compõe
+    Patient *-- EmergencyContact : compõe
+    Doctor *-- WorkingHours : compõe
+    WorkingHours *-- HourDTO : contém
 ```
 
 ## Conclusão
@@ -345,4 +330,4 @@ Os **objetos de valor** completam o quadro dos elementos do modelo ao lado das e
 
 Identificá-los é caminhar **na contramão da identidade**, procurando conceitos **sem ID representacional**, que se deixem definir **pelos atributos** e que **possam ser imutáveis** no domínio. Quando a atualização é frequente, a imutabilidade vira **overhead** e o objeto, então, **deixa de ser um objeto de valor**.
 
-No sistema hospitalar, chegamos ao **Endereço** e ao **Contato de Emergência** (associados ao paciente) e ao **Horário de Atendimento** (associado ao médico). Esses objetos **saem das entidades** para ganhar implementação concreta, mas continuam **referenciados por composição**. Nas próximas aulas, seguimos incrementando o modelo com os demais elementos do DDD.
+No sistema hospitalar, chegamos ao **Address** e ao **EmergencyContact** (associados ao paciente) e ao **WorkingHours** (associado ao médico). Esses objetos **saem das entidades** para ganhar implementação concreta, mas continuam **referenciados por composição**. Nas próximas aulas, seguimos incrementando o modelo com os demais elementos do DDD.

@@ -72,7 +72,7 @@ Vamos tomar como exemplo a regra de negócio já discutida: **o paciente não po
 
 - No DDD, essa regra fica no **domínio**, **independentemente da arquitetura** utilizada (em camadas ou hexagonal). O domínio é quem implementa a regra.
 - A arquitetura hexagonal ajuda a **isolar** essa regra, garantindo que ela não seja afetada por nada externo — nem em termos de **interface**, nem de **infraestrutura**.
-- A regra fica no **coração do sistema**; o `Paciente` especifica como a regra se comporta.
+- A regra fica no **coração do sistema**; o `Patient` especifica como a regra se comporta.
 - As **portas**, em suas interfaces, são as especificações de como um serviço de **agendamento de consulta** ou de **realização de exames** pode ser executado.
 - Os **adaptadores** implementam essas interfaces — dos dois lados. No **lado de saída** está a **persistência** e a comunicação com o banco de dados, via o adaptador **repositório**.
 
@@ -80,11 +80,11 @@ Vamos tomar como exemplo a regra de negócio já discutida: **o paciente não po
 sequenceDiagram
     participant U as Ator externo (adaptador de entrada)
     participant PI as Porta primária (Serviço de agendamento)
-    participant D as Domínio (Paciente)
+    participant D as Domínio (Patient)
     participant PS as Porta secundária (Repositório)
     participant AS as Adaptador de saída (Banco de Dados)
 
-    U->>PI: agendarConsulta(paciente, data, médico)
+    U->>PI: scheduleConsultation(patient, date, doctor)
     PI->>D: executa a regra de negócio
     D->>D: valida conflito de horário
     D->>PS: solicita persistência
@@ -97,46 +97,46 @@ sequenceDiagram
 
 ### Exemplo de porta e adaptador
 
-Ilustração de uma **porta** (interface = especificação) e de um **adaptador** que a implementa (exemplo inspirado no domínio hospitalar do `paciente.ts`):
+Ilustração de uma **porta** (interface = especificação) e de um **adaptador** que a implementa (exemplo inspirado no domínio hospitalar do `patient.ts`):
 
 ```typescript
-// Domínio: a regra de negócio vive aqui, isolada.
-class Paciente {
-  #consultas: Consulta[] = [];
+// Domain: the business rule lives here, isolated.
+class Patient {
+  #consultations: Consultation[] = [];
 
-  agendarConsulta(data: Date, medico: string): void {
-    const conflito = this.#consultas.some(
-      (c) => c.data.getTime() === data.getTime(),
+  scheduleConsultation(consultation: Consultation): void {
+    const conflict = this.#consultations.some(
+      (c) => c.date.getTime() === consultation.date.getTime(),
     );
 
-    if (conflito) {
+    if (conflict) {
       throw new Error(
-        "Paciente já possui uma consulta agendada neste horário.",
+        "Patient already has a consultation scheduled at this time.",
       );
     }
 
-    this.#consultas.push({ data, medico });
+    this.#consultations.push(consultation);
   }
 
-  get consultas(): ReadonlyArray<Consulta> {
-    return [...this.#consultas];
+  get consultations(): ReadonlyArray<Consultation> {
+    return [...this.#consultations];
   }
 }
 
-// Porta secundária (saída): especifica o contrato de persistência.
-export interface RepositorioPaciente {
-  salvar(paciente: Paciente): Promise<void>;
-  buscarPorId(id: string): Promise<Paciente | null>;
+// Secondary (output) port: specifies the persistence contract.
+export interface PatientRepository {
+  save(patient: Patient): Promise<void>;
+  findById(id: string): Promise<Patient | null>;
 }
 
-// Adaptador de saída: implementação concreta da porta.
-export class RepositorioPacientePostgres implements RepositorioPaciente {
-  async salvar(paciente: Paciente): Promise<void> {
-    // Converte o domínio e persiste no banco relacional.
+// Output adapter: concrete implementation of the port.
+export class PostgresPatientRepository implements PatientRepository {
+  async save(patient: Patient): Promise<void> {
+    // Converts the domain object and persists it in the relational database.
   }
 
-  async buscarPorId(id: string): Promise<Paciente | null> {
-    // Recupera e reidrata a entidade de domínio.
+  async findById(id: string): Promise<Patient | null> {
+    // Fetches and rehydrates the domain entity.
     return null;
   }
 }

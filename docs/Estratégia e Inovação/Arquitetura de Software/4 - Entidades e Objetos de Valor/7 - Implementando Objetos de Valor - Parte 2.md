@@ -224,11 +224,15 @@ Seguindo a adoção do **inglês** iniciada na Parte 1, a entidade `Medico` tamb
 | Antes (português) | Agora (inglês) |
 | --- | --- |
 | `Medico` | `Doctor` |
-| `horarioAtendimento` | `workingHours` |
+| `crm` | `rcm` (campo do Conselho Regional de Medicina) |
 | `nome` | `name` |
 | `especialidades` | `specialties` |
 | `telefone` | `phone` |
-| `crm` | `rcm` (campo do Conselho Regional de Medicina) |
+| `horarioAtendimento` | `workingHours` |
+| `Paciente` | `Patient` |
+| `Consulta` | `Consultation` |
+| `Exame` | `Exam` |
+| `Prontuario` | `MedicalRecord` |
 
 ## Testando no hospital
 
@@ -244,8 +248,8 @@ const doctor1 = new Doctor({
   phone: "(11) 77777-7777",
 });
 
-doctor1.addWorkingHours({ day: "Segunda", timeSlot: "08:00-12:00" });
-doctor1.addWorkingHours({ day: "Quarta", timeSlot: "08:00-12:00" });
+doctor1.addWorkingHours({ day: "Monday", timeSlot: "08:00-12:00" });
+doctor1.addWorkingHours({ day: "Wednesday", timeSlot: "08:00-12:00" });
 
 console.log(doctor1);
 ```

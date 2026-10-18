@@ -2,7 +2,7 @@
 
 ## Introdução e contexto
 
-Chegou a hora de **implementar os objetos de valor** identificados na modelagem. Dois deles afetam diretamente a entidade **Paciente**:
+Chegou a hora de **implementar os objetos de valor** identificados na modelagem. Dois deles afetam diretamente a entidade **Patient**:
 
 - **Address** (endereço);
 - **EmergencyContact** (contato de emergência).
@@ -25,7 +25,7 @@ A partir desta aula, o código passa a adotar **nomes em inglês** — para **ar
 | Nome | `nome` | `name` |
 | Telefone | `telefone` | `phone` |
 
-> **Nota:** os objetos de valor desta aula já nascem com identificadores em inglês. As demais entidades (`paciente`, `consulta`...) ainda usam nomes em português — a migração completa será feita **progressivamente** (na *Parte 2*, por exemplo, `medico` vira `Doctor`).
+> **Nota:** os objetos de valor desta aula já nascem com identificadores em inglês. A migração das demais entidades para o inglês acontece em seguida — na *Parte 2*, `medico` vira `Doctor`, e depois `Paciente`→`Patient`, `Consulta`→`Consultation`, `Exame`→`Exam` e `Prontuario`→`MedicalRecord`.
 
 ## O objeto de valor Address
 
@@ -147,7 +147,7 @@ export class EmergencyContact implements EmergencyContactDTO {
 
 ## Integrando ao teste do hospital
 
-Com as classes criadas e exportadas, instanciamos os objetos e os passamos ao paciente no lugar dos valores soltos (antes, `endereço` e `contatoEmergencia` eram apenas `string`):
+Com as classes criadas e exportadas, instanciamos os objetos e os passamos ao paciente no lugar dos valores soltos (antes, `address` e `emergencyContact` eram apenas `string`):
 
 ```typescript
 // testHospital.ts (trecho)
@@ -167,14 +167,14 @@ const emergencyContact1 = new EmergencyContact({
   phone: "(11) 88888-8888",
 });
 
-const paciente1 = new Paciente({
+const patient1 = new Patient({
   // ...demais dados do paciente...
-  endereço: address1,
-  contatoEmergencia: emergencyContact1,
+  address: address1,
+  emergencyContact: emergencyContact1,
 });
 ```
 
-Agora o endereço e o contato de emergência são **objetos de valor de verdade**, com igualdade por atributos, e a entidade `Paciente` os referencia por **composição**.
+Agora o endereço e o contato de emergência são **objetos de valor de verdade**, com igualdade por atributos, e a entidade `Patient` os referencia por **composição**.
 
 ## Impacto no modelo
 
@@ -193,19 +193,19 @@ classDiagram
         +phone
         +equals(other) bool
     }
-    class Paciente
+    class Patient
 
-    Paciente *-- Address : compõe
-    Paciente *-- EmergencyContact : compõe
+    Patient *-- Address : compõe
+    Patient *-- EmergencyContact : compõe
 ```
 
 ## Conclusão
 
-Nesta parte implementamos os objetos de valor que impactam diretamente o **Paciente**:
+Nesta parte implementamos os objetos de valor que impactam diretamente o **Patient**:
 
 - **`Address`** com `street`, `number`, `city`, `state` e `zipCode` — extensível com complementos conforme o domínio exigir;
 - **`EmergencyContact`** com `name` e `phone`.
 
 Ambos são **imutáveis** e implementam **`equals`**, comparando **todos os atributos** para garantir que não estamos substituindo um valor por ele mesmo nem tentando alterar um objeto já existente. Também adotamos **nomes em inglês** em todo o código, preparando o sistema para uso internacional.
 
-Na **próxima parte**, criamos os objetos de valor relacionados ao **Médico** — o que vai exigir **várias alterações** na implementação atual dessa entidade.
+Na **próxima parte**, criamos os objetos de valor relacionados ao **Doctor** — o que vai exigir **várias alterações** na implementação atual dessa entidade.

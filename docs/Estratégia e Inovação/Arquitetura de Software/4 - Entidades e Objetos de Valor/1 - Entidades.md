@@ -48,7 +48,7 @@ De forma bem geral, as **entidades** são objetos dentro do sistema que possuem 
 
 ```mermaid
 flowchart LR
-    subgraph Entidade["Paciente (Entidade)"]
+    subgraph Entidade["Patient (Entidade)"]
         ID["id: #quot;pac-001#quot;<br/>(identidade única)"]
         NOME["nome, data de nascimento, ..."]
     end
@@ -81,9 +81,9 @@ stateDiagram-v2
 
 O **comportamento** de uma entidade são os seus **métodos** — e as entidades devem refletir **regras de negócio**.
 
-No exemplo do `Paciente`, temos o método `agendarConsulta`, que carrega várias regras, como a já discutida: **duas consultas no mesmo horário não podem acontecer**.
+No exemplo do `Patient`, temos o método `scheduleConsultation`, que carrega várias regras, como a já discutida: **duas consultas no mesmo horário não podem acontecer**.
 
-Há um insight importante: ao definir o método, percebe-se que `agendarConsulta` precisa receber um **médico**. Ora — se precisamos de um médico, o **médico também não seria uma entidade**? Sim! Só pela definição de um método de outra entidade, já identificamos uma **nova entidade**.
+Há um insight importante: ao definir o método, percebe-se que `scheduleConsultation` precisa receber um **médico**. Ora — se precisamos de um médico, o **médico também não seria uma entidade**? Sim! Só pela definição de um método de outra entidade, já identificamos uma **nova entidade**.
 
 É assim que as coisas vão se **desdobrando**: daqui pra frente vamos **pensar e codar**, fixando conceitos e descobrindo novas premissas e possibilidades dentro do sistema.
 
@@ -102,22 +102,22 @@ Exemplo recorrente: será que vale a pena ter um ID para o **endereço**? A resp
 ## Entidades vs. Objetos de Valor
 
 - **Entidades**: possuem **identidade única** (normalmente um ID) e ciclo de vida significativo.
-- **Objetos de valor**: são importantes para o sistema, mas **dificilmente recebem um ID** — isso depende do problema. O `Endereço` associado ao `Paciente` é o exemplo clássico.
+- **Objetos de valor**: são importantes para o sistema, mas **dificilmente recebem um ID** — isso depende do problema. O `Address` associado ao `Patient` é o exemplo clássico.
 
 ## Agregados, Serviços de Domínio e Repositórios
 
 Uma visão geral dos outros elementos que acompanham as entidades:
 
-- **Agregados**: blocos de código/entidades que **relacionam objetos de valor com entidades**. Ex.: o `Paciente` junto do seu **histórico de consultas** — uma coisa está diretamente associada à outra.
+- **Agregados**: blocos de código/entidades que **relacionam objetos de valor com entidades**. Ex.: o `Patient` junto do seu **histórico de consultas** — uma coisa está diretamente associada à outra.
 - **Serviços de domínio**: determinam as **operações que não pertencem a uma entidade específica**. Costumam estar ligados a um **verbo/ação** executada sobre as entidades.
 - **Repositórios**: responsáveis por **persistir e recuperar** a entidade/agregado. Já mencionados algumas vezes, terão suas implementações exploradas em breve.
 
 ```mermaid
 flowchart LR
-    P["Paciente<br/>(agregado raiz)"]
-    C1["Consulta"]
-    C2["Consulta"]
-    C3["Consulta"]
+    P["Patient<br/>(agregado raiz)"]
+    C1["Consultation"]
+    C2["Consultation"]
+    C3["Consultation"]
 
     P --> C1
     P --> C2
@@ -130,11 +130,11 @@ Com base em tudo que já vimos, o levantamento inicial das entidades do sistema 
 
 | Entidade | Responsabilidade |
 | --- | --- |
-| **Médico** | Atender os pacientes. |
-| **Paciente** | Receber o cuidado/atendimento. |
-| **Consulta** | Relacionar pacientes e médicos. |
-| **Exame** | Exame médico realizado e atrelado ao paciente. |
-| **Prontuário** | Reunir todo o histórico médico do paciente no hospital. |
+| **Doctor** | Atender os pacientes. |
+| **Patient** | Receber o cuidado/atendimento. |
+| **Consultation** | Relacionar pacientes e médicos. |
+| **Exam** | Exame médico realizado e atrelado ao paciente. |
+| **MedicalRecord** | Reunir todo o histórico médico do paciente no hospital. |
 
 Cada uma dessas entidades tem uma **identidade única** e seu próprio **ciclo de vida**.
 
@@ -142,11 +142,11 @@ Fica aberta para as próximas aulas a discussão de **como organizar** o prontu�
 
 ```mermaid
 flowchart TD
-    P["Paciente"]
-    M["Médico"]
-    C["Consulta"]
-    E["Exame"]
-    PR["Prontuário"]
+    P["Patient"]
+    M["Doctor"]
+    C["Consultation"]
+    E["Exam"]
+    PR["MedicalRecord"]
 
     P -->|agenda| C
     M -->|atende| C
@@ -158,70 +158,70 @@ flowchart TD
 
 ## Exemplo de entidade (código)
 
-Ilustração de uma **entidade** com identidade explícita, ciclo de vida e comportamento que reflete regras de negócio (estilo DDD do `paciente.ts`):
+Ilustração de uma **entidade** com identidade explícita, ciclo de vida e comportamento que reflete regras de negócio (estilo DDD do `patient.ts`):
 
 ```typescript
-export interface Consulta {
-  data: Date;
-  medico: string;
+export interface Consultation {
+  date: Date;
+  doctor: string;
 }
 
-interface PacienteDTO {
+interface PatientDTO {
   id: string;
-  nome: string;
-  dataNasc: Date;
-  historico: string;
-  alergia: string;
-  endereco: string;
-  telefone: string;
+  name: string;
+  birthDate: Date;
+  medicalHistory: string;
+  allergy: string;
+  address: string;
+  phone: string;
   email: string;
 }
 
-type CriarPacienteDTO = Omit<PacienteDTO, "id">;
+type CreatePatientDTO = Omit<PatientDTO, "id">;
 
-class Paciente {
+class Patient {
   // Identidade única: diferencia esta entidade de qualquer outra,
   // mesmo que os demais atributos sejam idênticos.
   readonly id: string;
 
-  nome: string;
-  dataNasc: Date;
-  historico: string;
-  alergia: string;
-  endereco: string;
-  telefone: string;
+  name: string;
+  birthDate: Date;
+  medicalHistory: string;
+  allergy: string;
+  address: string;
+  phone: string;
   email: string;
 
-  #consultas: Consulta[] = [];
+  #consultations: Consultation[] = [];
 
-  constructor(dados: CriarPacienteDTO) {
+  constructor(data: CreatePatientDTO) {
     this.id = crypto.randomUUID();
-    this.nome = dados.nome;
-    this.dataNasc = dados.dataNasc;
-    this.historico = dados.historico;
-    this.alergia = dados.alergia;
-    this.endereco = dados.endereco;
-    this.telefone = dados.telefone;
-    this.email = dados.email;
+    this.name = data.name;
+    this.birthDate = data.birthDate;
+    this.medicalHistory = data.medicalHistory;
+    this.allergy = data.allergy;
+    this.address = data.address;
+    this.phone = data.phone;
+    this.email = data.email;
   }
 
   // Comportamento: método que carrega regras de negócio.
-  agendarConsulta(data: Date, medico: string): void {
-    const conflito = this.#consultas.some(
-      (c) => c.data.getTime() === data.getTime(),
+  scheduleConsultation(date: Date, doctor: string): void {
+    const conflict = this.#consultations.some(
+      (c) => c.date.getTime() === date.getTime(),
     );
 
-    if (conflito) {
+    if (conflict) {
       throw new Error(
-        "Paciente já possui uma consulta agendada neste horário.",
+        "Patient already has a consultation scheduled at this time.",
       );
     }
 
-    this.#consultas.push({ data, medico });
+    this.#consultations.push({ date, doctor });
   }
 
-  get consultas(): ReadonlyArray<Consulta> {
-    return [...this.#consultas];
+  get consultations(): ReadonlyArray<Consultation> {
+    return [...this.#consultations];
   }
 }
 ```
@@ -230,6 +230,6 @@ class Paciente {
 
 As **entidades** são objetos com **identidade única** — que as diferencia mesmo quando os atributos coincidem — e que possuem **ciclo de vida** (criar, modificar, excluir) e **comportamento** que expressa regras de negócio. Identificá-las **depende do domínio** e exige conversa com o especialista.
 
-No sistema hospitalar, partimos das entidades **Médico, Paciente, Consulta, Exame e Prontuário**, cada uma com sua identidade e ciclo de vida. Daqui em diante, a prática é essencial: **desenhar diagramas, codar e ir descobrindo** novas possibilidades.
+No sistema hospitalar, partimos das entidades **Doctor, Patient, Consultation, Exam e MedicalRecord**, cada uma com sua identidade e ciclo de vida. Daqui em diante, a prática é essencial: **desenhar diagramas, codar e ir descobrindo** novas possibilidades.
 
 Na **próxima aula**, aprofundaremos os **Objetos de Valor**.

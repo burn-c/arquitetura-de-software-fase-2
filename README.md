@@ -60,11 +60,14 @@ exemplo é um **sistema hospitalar**:
 
 | Entidade | Responsabilidade |
 | --- | --- |
-| `Paciente` | Recebe o atendimento; histórico médico e regras de agendamento. |
-| `Medico` | Atende os pacientes; especialidades e horários de atendimento. |
-| `Consulta` | Relaciona paciente e médico, com status (`agendada`/`realizada`/`cancelada`). |
-| `Exame` | Exame médico realizado, atrelado ao paciente. |
-| `Prontuario` | Diagnósticos, tratamentos e medicamentos do paciente. |
+| `Patient` | Recebe o atendimento; histórico médico e regras de agendamento. |
+| `Doctor` | Atende os pacientes; especialidades e horários de atendimento. |
+| `Consultation` | Relaciona paciente e médico, com status (`scheduled`/`completed`/`canceled`). |
+| `Exam` | Exame médico realizado, atrelado ao paciente. |
+| `MedicalRecord` | Diagnósticos, tratamentos e medicamentos do paciente. |
+
+Complementam o modelo os **objetos de valor** `Address`, `EmergencyContact` e
+`WorkingHours`.
 
 As entidades seguem as convenções do projeto:
 
@@ -72,7 +75,7 @@ As entidades seguem as convenções do projeto:
 - 📖 Coleções expostas como `ReadonlyArray` via getters que retornam cópias
 - 🧾 Construtor recebendo um único objeto **DTO**
 - 🧠 Regras de negócio dentro da própria entidade
-- 🔗 Relacionamentos entre entidades feitos por **ID** (`pacienteId`, `medicoId`)
+- 🔗 Relacionamentos entre entidades feitos por **ID** (`patientId`, `doctorId`)
 
 ## 🚀 Como executar
 
@@ -105,7 +108,7 @@ pnpm typecheck
 ```
 
 > Cada arquivo em `domain/` também pode ser executado individualmente, por
-> exemplo: `node domain/paciente.ts`.
+> exemplo: `node domain/patient.ts`.
 
 ## 🛠 Tecnologias
 
@@ -118,11 +121,11 @@ pnpm typecheck
 ```
 .
 ├── domain/                 # Modelo de domínio (uma entidade por arquivo)
-│   ├── paciente.ts
-│   ├── medico.ts
-│   ├── consulta.ts
-│   ├── exame.ts
-│   └── prontuario.ts
+│   ├── patient.ts
+│   ├── doctor.ts
+│   ├── consultation.ts
+│   ├── exam.ts
+│   └── medicalRecord.ts
 ├── docs/                   # Resumos de aula em Markdown
 │   └── Estratégia e Inovação/
 │       └── Arquitetura de Software/
