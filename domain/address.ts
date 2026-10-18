@@ -1,23 +1,28 @@
 export interface AddressDTO {
-  street: string;
-  number: string;
-  city: string;
-  state: string;
-  zipCode: string;
+  readonly street: string;
+  readonly number: string;
+  readonly city: string;
+  readonly state: string;
+  readonly zipCode: string;
 }
 
 export class Address implements AddressDTO {
-  street: string;
-  number: string;
-  city: string;
-  state: string;
-  zipCode: string;
+  readonly street: string;
+  readonly number: string;
+  readonly city: string;
+  readonly state: string;
+  readonly zipCode: string;
+
   constructor(data: AddressDTO) {
     this.street = data.street;
     this.number = data.number;
     this.city = data.city;
     this.state = data.state;
     this.zipCode = data.zipCode;
+
+    // Imutabilidade em runtime: depois de criado, o objeto não aceita reatribuição
+    // nem novos atributos. O `readonly` acima garante o mesmo em tempo de compilação.
+    Object.freeze(this);
   }
 
   equals(otherAddress: Address): boolean {

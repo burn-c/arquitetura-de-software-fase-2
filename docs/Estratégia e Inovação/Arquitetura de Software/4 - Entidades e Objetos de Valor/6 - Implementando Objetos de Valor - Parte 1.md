@@ -86,19 +86,19 @@ Ou seja, a identidade do paciente **reduz drasticamente** a possibilidade de amb
 ```typescript
 // domain/address.ts — objeto de valor imutável, comparado por atributos.
 export interface AddressDTO {
-  street: string;
-  number: string;
-  city: string;
-  state: string;
-  zipCode: string;
+  readonly street: string;
+  readonly number: string;
+  readonly city: string;
+  readonly state: string;
+  readonly zipCode: string;
 }
 
 export class Address implements AddressDTO {
-  street: string;
-  number: string;
-  city: string;
-  state: string;
-  zipCode: string;
+  readonly street: string;
+  readonly number: string;
+  readonly city: string;
+  readonly state: string;
+  readonly zipCode: string;
 
   constructor(data: AddressDTO) {
     this.street = data.street;
@@ -106,6 +106,9 @@ export class Address implements AddressDTO {
     this.city = data.city;
     this.state = data.state;
     this.zipCode = data.zipCode;
+
+    // Imutabilidade em runtime: o objeto não aceita reatribuição nem novos atributos.
+    Object.freeze(this);
   }
 
   // true somente se todos os atributos forem iguais.
@@ -126,17 +129,20 @@ export class Address implements AddressDTO {
 ```typescript
 // domain/emergencyContact.ts — dois atributos, nada além disso.
 export interface EmergencyContactDTO {
-  name: string;
-  phone: string;
+  readonly name: string;
+  readonly phone: string;
 }
 
 export class EmergencyContact implements EmergencyContactDTO {
-  name: string;
-  phone: string;
+  readonly name: string;
+  readonly phone: string;
 
   constructor(data: EmergencyContactDTO) {
     this.name = data.name;
     this.phone = data.phone;
+
+    // Imutabilidade em runtime: o objeto não aceita reatribuição nem novos atributos.
+    Object.freeze(this);
   }
 
   equals(otherContact: EmergencyContact): boolean {
