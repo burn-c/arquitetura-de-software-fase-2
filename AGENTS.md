@@ -13,6 +13,8 @@ um curso de pós-graduação em Full-Stack com IA. O repositório combina:
 ## Convenções de Idioma
 
 - **Documentação e textos:** Português (acompanha o material do curso).
+- **Comentários de código:** Português — inclusive JSDoc, comentários de
+  linha e os títulos/descrições dos testes.
 - **Identificadores de código:** Inglês (arquivos, classes, atributos e
   métodos), ex.: `patient.ts`, `scheduleConsultation`. A migração do domínio
   para o inglês é progressiva e acompanha as aulas.
