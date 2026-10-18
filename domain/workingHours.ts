@@ -1,3 +1,5 @@
+import { sameItems } from "./collectionEquality.ts";
+
 export interface WorkingHoursDTO {
   hours: Array<HourDTO>;
 }
@@ -42,16 +44,12 @@ export class WorkingHours implements WorkingHoursDTO {
   }
 
   equals(other: WorkingHours): boolean {
-    if (this.hours.length !== other.hours.length) {
-      return false;
-    }
-
-  return this.hours.every((hour) =>
-      other.hours.some(
-        (otherHour) =>
-          otherHour.day === hour.day && otherHour.timeSlot === hour.timeSlot
-      )
-    );  
+    return sameItems(
+      this.hours,
+      other.hours,
+      (hour, otherHour) =>
+        hour.day === otherHour.day && hour.timeSlot === otherHour.timeSlot,
+    );
   }
 
   listHours(): Array<HourDTO> {
