@@ -1,18 +1,13 @@
 import { sameItems } from "./collectionEquality.ts";
+import type { DiagnosesDTO } from "./diagnosis.ts";
 import { Diagnoses } from "./diagnosis.ts";
 import { Medication } from "./medication.ts";
 import { Treatment } from "./treatment.ts";
 
-interface MedicalRecordDTO {
-  readonly diagnoses: ReadonlyArray<Diagnoses>;
+export interface MedicalRecordDTO {
+  readonly diagnoses: ReadonlyArray<DiagnosesDTO>;
   readonly treatments: ReadonlyArray<Treatment>;
   readonly medications: ReadonlyArray<Medication>;
-
-  addDiagnoses(diagnoses: Diagnoses): void;
-  addTreatment(treatment: Treatment): void;
-  addMedication(medication: Medication): void;
-
-  equals(otherRecord: MedicalRecord): boolean;
 }
 
 export class MedicalRecord implements MedicalRecordDTO {

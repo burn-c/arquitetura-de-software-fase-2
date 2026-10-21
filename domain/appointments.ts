@@ -1,21 +1,21 @@
-type ConsultationStatus = "scheduled" | "completed" | "canceled";
+type AppointmentStatus = "scheduled" | "completed" | "canceled";
 
-interface ConsultationDTO {
+interface AppointmentDTO {
   id: string;
   date: Date;
   patientId: string;
   doctorId: string;
   reason: string;
-  status: ConsultationStatus;
+  status: AppointmentStatus;
   notes?: string;
 }
 
 // Opção do construtor: o status é opcional e assume "scheduled" por padrão.
-type CreateConsultationDTO = Omit<ConsultationDTO, "status"> & {
-  status?: ConsultationStatus;
+type CreateAppointmentDTO = Omit<AppointmentDTO, "status"> & {
+  status?: AppointmentStatus;
 };
 
-export class Consultation implements ConsultationDTO {
+export class Appointment implements AppointmentDTO {
   id: string;
   date: Date;
   patientId: string;
@@ -23,9 +23,9 @@ export class Consultation implements ConsultationDTO {
   reason: string;
   notes?: string;
 
-  #status: ConsultationStatus;
+  #status: AppointmentStatus;
 
-  constructor(data: CreateConsultationDTO) {
+  constructor(data: CreateAppointmentDTO) {
     this.id = data.id;
     this.date = data.date;
     this.patientId = data.patientId;
@@ -37,38 +37,38 @@ export class Consultation implements ConsultationDTO {
 
   complete(): void {
     if (this.#status !== "scheduled") {
-      throw new Error("Only scheduled consultations can be completed.");
+      throw new Error("Only scheduled appointments can be completed.");
     }
 
     this.#status = "completed";
-    console.log(`Consultation ${this.id} marked as completed.`);
+    console.log(`Appointment ${this.id} marked as completed.`);
   }
 
   cancel(): void {
     if (this.#status === "completed") {
-      throw new Error("A completed consultation cannot be canceled.");
+      throw new Error("A completed appointment cannot be canceled.");
     }
 
     this.#status = "canceled";
-    console.log(`Consultation ${this.id} canceled.`);
+    console.log(`Appointment ${this.id} canceled.`);
   }
 
-  get status(): ConsultationStatus {
+  get status(): AppointmentStatus {
     return this.#status;
   }
 }
 
 if (import.meta.main) {
-  const consultation1 = new Consultation({
-    id: "con-001",
+  const appointment1 = new Appointment({
+    id: "apt-001",
     date: new Date("2023-06-15"),
     patientId: "123",
     doctorId: "med-001",
-    reason: "Routine cardiology consultation",
+    reason: "Routine cardiology appointment",
     notes: "Patient fasting.",
   });
 
-  console.log(`Initial status: ${consultation1.status}`);
-  consultation1.complete();
-  console.log(`Final status: ${consultation1.status}`);
+  console.log(`Initial status: ${appointment1.status}`);
+  appointment1.complete();
+  console.log(`Final status: ${appointment1.status}`);
 }

@@ -1,5 +1,5 @@
 import { Address } from "./domain/address.ts";
-import { Consultation } from "./domain/consultation.ts";
+import { Appointment } from "./domain/appointments.ts";
 import { Diagnoses } from "./domain/diagnosis.ts";
 import { Medication } from "./domain/medication.ts";
 import { Treatment } from "./domain/treatment.ts";
@@ -26,12 +26,11 @@ const address1 = new Address({
 
 const patient1 = new Patient({
   id: "1",
-  cpf: "123.456.789-00",
+  identificationDocument: "123.456.789-00",
   name: "João Silva",
   birthDate: new Date("1990-01-01"),
   gender: "Male",
   bloodType: "O+",
-  allergies: ["None"],
   address: address1,
   phone: "(11) 99999-9999",
   email: "joao.silva@email.com",
@@ -46,7 +45,7 @@ const doctor1 = new Doctor({
   phone: "(11) 77777-7777",
 });
 
-const consultation1 = new Consultation({
+const appointment1 = new Appointment({
   id: "201",
   date: new Date("2023-10-15"),
   patientId: patient1.id,
@@ -70,7 +69,7 @@ const exam1 = new Exam({
 
 const medicalRecord1 = new MedicalRecord();
 
-patient1.scheduleConsultation(consultation1);
+patient1.scheduleAppointment(appointment1);
 patient1.addExam(exam1);
 medicalRecord1.addDiagnoses(new Diagnoses({ description: "Hypertension" }));
 medicalRecord1.addTreatment(
@@ -84,7 +83,7 @@ console.log("Patient:");
 console.table([
   { Field: "ID", Value: patient1.id },
   { Field: "Name", Value: patient1.name },
-  { Field: "CPF", Value: patient1.cpf },
+  { Field: "CPF", Value: patient1.identificationDocument },
   {
     Field: "Birth date",
     Value: patient1.birthDate.toLocaleDateString("pt-BR", { timeZone: "UTC" }),
@@ -127,16 +126,16 @@ console.table(
   })),
 );
 
-console.log("Consultation:");
+console.log("Appointment:");
 console.table([
   {
-    ID: consultation1.id,
-    Date: consultation1.date.toLocaleDateString("pt-BR", { timeZone: "UTC" }),
-    Patient: consultation1.patientId,
-    Doctor: consultation1.doctorId,
-    Reason: consultation1.reason,
-    Status: consultation1.status,
-    Notes: consultation1.notes ?? "-",
+    ID: appointment1.id,
+    Date: appointment1.date.toLocaleDateString("pt-BR", { timeZone: "UTC" }),
+    Patient: appointment1.patientId,
+    Doctor: appointment1.doctorId,
+    Reason: appointment1.reason,
+    Status: appointment1.status,
+    Notes: appointment1.notes ?? "-",
   },
 ]);
 
