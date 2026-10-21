@@ -35,6 +35,13 @@ export class Appointment implements AppointmentDTO {
     this.#status = data.status ?? "scheduled";
   }
 
+  hasConflict(otherAppointment: Appointment): boolean {
+    return (
+      this.date.getTime() === otherAppointment.date.getTime() &&
+      this.doctorId === otherAppointment.doctorId
+    );
+  }
+
   complete(): void {
     if (this.#status !== "scheduled") {
       throw new Error("Only scheduled appointments can be completed.");

@@ -113,17 +113,23 @@ export class Patient implements PatientDTO {
   }
 
   scheduleAppointment(appointment: Appointment): void {
-    const conflict = this.#appointments.some(
-      (existing) => existing.date.getTime() === appointment.date.getTime(),
+    if (!appointment || !(appointment instanceof Appointment)) {
+      throw new Error("Invalid appointment object.");
+    }
+
+    const hasConflict = this.#appointments.some((existing) =>
+      existing.hasConflict(appointment)
     );
 
-    if (conflict) {
-      throw new Error("Patient already has an appointment scheduled at this time.");
+    if (hasConflict) {
+      throw new Error(
+        `Appointment conflict: ${this.name} already has an appointment with Dr. ${appointment.doctorId} at ${appointment.date}.`,
+      );
     }
 
     this.#appointments.push(appointment);
     console.log(
-      `Appointment scheduled for ${this.name} on ${appointment.date.toLocaleDateString("pt-BR", { timeZone: "UTC" })}.`,
+      `Appointment scheduled for ${this.name} with Dr. ${appointment.doctorId} on ${appointment.date}.`,
     );
   }
 
