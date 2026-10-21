@@ -5,9 +5,6 @@ import { Diagnoses } from "./record/Diagnosis.ts";
 import type { EmergencyContactDTO } from "../shared/EmergencyContact.ts";
 import { Exam } from "./Exam.ts";
 import { MedicalRecord } from "./record/MedicalRecord.ts";
-import { Medication } from "./record/Medication.ts";
-import { Treatment } from "./record/Treatment.ts";
-import type { TreatmentDTO } from "./record/Treatment.ts";
 
 interface PatientDTO {
   id: string;
@@ -25,6 +22,7 @@ interface PatientDTO {
   readonly appointments: ReadonlyArray<Appointment>;
   readonly exams: ReadonlyArray<Exam>;
   readonly allergies: ReadonlyArray<Allergy>;
+  readonly medicalRecord: MedicalRecord;
 
   scheduleAppointment(appointment: Appointment): void;
   addExam(exam: Exam): void;
@@ -49,11 +47,13 @@ export class Patient implements PatientDTO {
   email: string;
   emergencyContact: EmergencyContactDTO;
   
-  // Propriedades realmente privadas, inacessíveis de fora da classe.
+  // Coleções privadas: acessíveis apenas pelos getters, que retornam cópias.
   #appointments: Appointment[] = [];
   #exams: Exam[] = [];
-  #allergies: Allergy[] = [];
-  #medicalRecord: MedicalRecord = new MedicalRecord();
+
+  // Estado manipulado pelo PatientService, como no exemplo da aula.
+  allergies: Allergy[] = [];
+  medicalRecord: MedicalRecord = new MedicalRecord();
 
   // 2. Construtor recebendo um objeto (limpo, sem confusão na ordem dos argumentos).
   constructor(data: CreatePatientDTO) {
@@ -68,38 +68,13 @@ export class Patient implements PatientDTO {
     this.email = data.email;
     this.emergencyContact = data.emergencyContact;
 
-    this.#medicalRecord = new MedicalRecord();
+    this.medicalRecord = new MedicalRecord();
     this.#appointments = [];
     this.#exams = [];
-    this.#allergies = [];
+    this.allergies = [];
   }
 
   // 3. Métodos no corpo da classe (fora do construtor).
-  addAllergy(allergy: Allergy): void {
-    if (!allergy || !(allergy instanceof Allergy)) {
-      throw new Error("Invalid allergy object.");
-    }
-
-    const hasAllergy = this.#allergies.some((existing) =>
-      existing.equals(allergy)
-    );
-
-    if (hasAllergy) {
-      console.log(`Allergy "${allergy.type}" already exists for ${this.name}.`);
-      return;
-    }
-
-    this.#allergies.push(allergy);
-    console.log(
-      `Allergy "${allergy.type}" added to ${this.name}'s medical history.`,
-    );
-  }
-
-  addDiagnosis(diagnosis: Diagnoses): void {
-    this.#medicalRecord.addDiagnoses(diagnosis);
-    console.log(`Diagnosis "${diagnosis.description}" added to ${this.name}'s medical history.`);
-  }
-
   addExam(exam: Exam): void {
     if (!exam || !(exam instanceof Exam)) {
       throw new Error("Invalid exam object.");
@@ -108,22 +83,6 @@ export class Patient implements PatientDTO {
     this.#exams.push(exam);
     console.log(
       `Exam ${exam.type} added for ${this.name} with result: ${exam.result}.`,
-    );
-  }
-
-  addMedication({dosage, name}: Medication): void {
-    const medication = new Medication({ dosage, name });
-    this.#medicalRecord.addMedication(medication);
-    console.log(
-      `Medication "${medication.name}" with dosage "${medication.dosage}" added to ${this.name}'s medical history.`,
-    );
-  }
-
-  addTreatment(description: TreatmentDTO): void {
-    const treatment = new Treatment(description);
-    this.#medicalRecord.addTreatment(treatment);
-    console.log(
-      `Treatment "${treatment.description}" added to ${this.name}'s medical history.`,
     );
   }
 
@@ -156,56 +115,4 @@ export class Patient implements PatientDTO {
   get exams(): ReadonlyArray<Exam> {
     return [...this.#exams];
   }
-
-  get allergies(): ReadonlyArray<Allergy> {
-    return [...this.#allergies];
-  }
-}
-
-if (import.meta.main) {
-  const patient1 = new Patient({
-    id: "123",
-    identificationDocument: "123.456.789-00",
-    name: "João Silva",
-    birthDate: new Date("1990-05-15"),
-    gender: "Male",
-    bloodType: "A+",
-    address: {
-      street: "Rua das Flores",
-      number: "123",
-      city: "São Paulo",
-      state: "SP",
-      zipCode: "01234-567",
-    },
-    phone: "(11) 98765-4321",
-    email: "joao.silva@email.com",
-    emergencyContact: {
-      name: "Maria Silva",
-      phone: "(11) 98765-4321",
-    },
-  });
-
-  patient1.scheduleAppointment(
-    new Appointment({
-      id: "apt-001",
-      date: new Date("2023-06-15"),
-      patientId: patient1.id,
-      doctorId: "med-001",
-      reason: "Routine cardiology appointment",
-    }),
-  );
-
-  patient1.addExam(
-    new Exam({
-      id: "exa-001",
-      type: "Electrocardiogram",
-      result: "Normal",
-      date: new Date("2023-06-15"),
-      location: "Central Laboratory",
-      responsible: "Dr. João",
-      patientId: patient1.id,
-    }),
-  );
-
-  patient1.addDiagnosis(new Diagnoses({ description: "Appendectomy in 2010" }));
 }
