@@ -102,7 +102,7 @@ sequenceDiagram
 
     U->>P: preenche formulário de agendamento
     P->>A: envia dados
-    A->>D: scheduleConsultation(patient, date, doctor)
+    A->>D: scheduleAppointment(patient, date, doctor)
     D->>D: valida regra (sem conflito de horário)
     D-->>A: validação OK
     A->>I: persiste consulta
@@ -130,24 +130,24 @@ Ilustração da regra *"um paciente não pode agendar duas consultas no mesmo ho
 
 ```typescript
 class Patient {
-  #consultations: Consultation[] = [];
+  #appointments: Appointment[] = [];
 
-  scheduleConsultation(consultation: Consultation): void {
-    const conflict = this.#consultations.some(
-      (c) => c.date.getTime() === consultation.date.getTime(),
+  scheduleAppointment(appointment: Appointment): void {
+    const conflict = this.#appointments.some(
+      (c) => c.date.getTime() === appointment.date.getTime(),
     );
 
     if (conflict) {
       throw new Error(
-        "Patient already has a consultation scheduled at this time.",
+        "Patient already has an appointment scheduled at this time.",
       );
     }
 
-    this.#consultations.push(consultation);
+    this.#appointments.push(appointment);
   }
 
-  get consultations(): ReadonlyArray<Consultation> {
-    return [...this.#consultations];
+  get appointments(): ReadonlyArray<Appointment> {
+    return [...this.#appointments];
   }
 }
 ```

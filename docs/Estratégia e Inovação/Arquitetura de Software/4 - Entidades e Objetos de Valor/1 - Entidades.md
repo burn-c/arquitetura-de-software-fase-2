@@ -81,9 +81,9 @@ stateDiagram-v2
 
 O **comportamento** de uma entidade são os seus **métodos** — e as entidades devem refletir **regras de negócio**.
 
-No exemplo do `Patient`, temos o método `scheduleConsultation`, que carrega várias regras, como a já discutida: **duas consultas no mesmo horário não podem acontecer**.
+No exemplo do `Patient`, temos o método `scheduleAppointment`, que carrega várias regras, como a já discutida: **duas consultas no mesmo horário não podem acontecer**.
 
-Há um insight importante: ao definir o método, percebe-se que `scheduleConsultation` precisa receber um **médico**. Ora — se precisamos de um médico, o **médico também não seria uma entidade**? Sim! Só pela definição de um método de outra entidade, já identificamos uma **nova entidade**.
+Há um insight importante: ao definir o método, percebe-se que `scheduleAppointment` precisa receber um **médico**. Ora — se precisamos de um médico, o **médico também não seria uma entidade**? Sim! Só pela definição de um método de outra entidade, já identificamos uma **nova entidade**.
 
 É assim que as coisas vão se **desdobrando**: daqui pra frente vamos **pensar e codar**, fixando conceitos e descobrindo novas premissas e possibilidades dentro do sistema.
 
@@ -115,9 +115,9 @@ Uma visão geral dos outros elementos que acompanham as entidades:
 ```mermaid
 flowchart LR
     P["Patient<br/>(agregado raiz)"]
-    C1["Consultation"]
-    C2["Consultation"]
-    C3["Consultation"]
+    C1["Appointment"]
+    C2["Appointment"]
+    C3["Appointment"]
 
     P --> C1
     P --> C2
@@ -132,7 +132,7 @@ Com base em tudo que já vimos, o levantamento inicial das entidades do sistema 
 | --- | --- |
 | **Doctor** | Atender os pacientes. |
 | **Patient** | Receber o cuidado/atendimento. |
-| **Consultation** | Relacionar pacientes e médicos. |
+| **Appointment** | Relacionar pacientes e médicos. |
 | **Exam** | Exame médico realizado e atrelado ao paciente. |
 | **MedicalRecord** | Reunir todo o histórico médico do paciente no hospital. |
 
@@ -144,7 +144,7 @@ Fica aberta para as próximas aulas a discussão de **como organizar** o prontu�
 flowchart TD
     P["Patient"]
     M["Doctor"]
-    C["Consultation"]
+    C["Appointment"]
     E["Exam"]
     PR["MedicalRecord"]
 
@@ -161,7 +161,7 @@ flowchart TD
 Ilustração de uma **entidade** com identidade explícita, ciclo de vida e comportamento que reflete regras de negócio (estilo DDD do `patient.ts`):
 
 ```typescript
-export interface Consultation {
+export interface Appointment {
   date: Date;
   doctor: string;
 }
@@ -192,7 +192,7 @@ class Patient {
   phone: string;
   email: string;
 
-  #consultations: Consultation[] = [];
+  #appointments: Appointment[] = [];
 
   constructor(data: CreatePatientDTO) {
     this.id = crypto.randomUUID();
@@ -206,22 +206,22 @@ class Patient {
   }
 
   // Comportamento: método que carrega regras de negócio.
-  scheduleConsultation(date: Date, doctor: string): void {
-    const conflict = this.#consultations.some(
+  scheduleAppointment(date: Date, doctor: string): void {
+    const conflict = this.#appointments.some(
       (c) => c.date.getTime() === date.getTime(),
     );
 
     if (conflict) {
       throw new Error(
-        "Patient already has a consultation scheduled at this time.",
+        "Patient already has an appointment scheduled at this time.",
       );
     }
 
-    this.#consultations.push({ date, doctor });
+    this.#appointments.push({ date, doctor });
   }
 
-  get consultations(): ReadonlyArray<Consultation> {
-    return [...this.#consultations];
+  get appointments(): ReadonlyArray<Appointment> {
+    return [...this.#appointments];
   }
 }
 ```
@@ -230,6 +230,6 @@ class Patient {
 
 As **entidades** são objetos com **identidade única** — que as diferencia mesmo quando os atributos coincidem — e que possuem **ciclo de vida** (criar, modificar, excluir) e **comportamento** que expressa regras de negócio. Identificá-las **depende do domínio** e exige conversa com o especialista.
 
-No sistema hospitalar, partimos das entidades **Doctor, Patient, Consultation, Exam e MedicalRecord**, cada uma com sua identidade e ciclo de vida. Daqui em diante, a prática é essencial: **desenhar diagramas, codar e ir descobrindo** novas possibilidades.
+No sistema hospitalar, partimos das entidades **Doctor, Patient, Appointment, Exam e MedicalRecord**, cada uma com sua identidade e ciclo de vida. Daqui em diante, a prática é essencial: **desenhar diagramas, codar e ir descobrindo** novas possibilidades.
 
 Na **próxima aula**, aprofundaremos os **Objetos de Valor**.

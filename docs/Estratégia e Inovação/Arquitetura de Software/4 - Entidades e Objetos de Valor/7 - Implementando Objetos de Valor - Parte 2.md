@@ -230,7 +230,7 @@ Seguindo a adoção do **inglês** iniciada na Parte 1, a entidade `Medico` tamb
 | `telefone` | `phone` |
 | `horarioAtendimento` | `workingHours` |
 | `Paciente` | `Patient` |
-| `Consulta` | `Consultation` |
+| `Consulta` | `Appointment` |
 | `Exame` | `Exam` |
 | `Prontuario` | `MedicalRecord` |
 

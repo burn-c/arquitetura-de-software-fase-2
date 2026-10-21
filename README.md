@@ -55,21 +55,21 @@ uma arte que se aprende praticando.
 
 ## 🏥 Modelo de domínio
 
-O domínio fica em `domain/`, com **um arquivo por entidade**. O contexto de
+O domínio fica em `domain/`, com **um arquivo por entidade ou objeto de valor**. O contexto de
 exemplo é um **sistema hospitalar**:
 
-| Entidade | Responsabilidade |
-| --- | --- |
-| `Patient` | Recebe o atendimento; histórico médico e regras de agendamento. |
-| `Doctor` | Atende os pacientes; especialidades e horários de atendimento. |
-| `Consultation` | Relaciona paciente e médico, com status (`scheduled`/`completed`/`canceled`). |
-| `Exam` | Exame médico realizado, atrelado ao paciente. |
-| `MedicalRecord` | Diagnósticos, tratamentos e medicamentos do paciente. |
+| Conceito | Tipo | Responsabilidade |
+| --- | --- | --- |
+| `Patient` | Entidade (raiz do agregado) | Recebe o atendimento; histórico médico e regras de agendamento. |
+| `Doctor` | Entidade (raiz do agregado) | Atende os pacientes; especialidades e horários de atendimento. |
+| `Appointment` | Entidade | Relaciona paciente e médico, com status (`scheduled`/`completed`/`canceled`). |
+| `Exam` | Entidade | Exame médico realizado, atrelado ao paciente. |
+| `MedicalRecord` | Objeto de valor | Diagnósticos, tratamentos e medicamentos do paciente. |
 
-Complementam o modelo os **objetos de valor** `Address`, `EmergencyContact` e
-`WorkingHours`.
+Complementam o modelo os **objetos de valor** `Allergy`, `Address`, `EmergencyContact`,
+`WorkingHours`, `Diagnoses`, `Treatment` e `Medication`.
 
-As entidades seguem as convenções do projeto:
+As classes do domínio seguem as convenções do projeto:
 
 - 🔒 Encapsulamento com campos privados do ECMAScript (`#campo`)
 - 📖 Coleções expostas como `ReadonlyArray` via getters que retornam cópias
@@ -123,7 +123,7 @@ pnpm typecheck
 ├── domain/                 # Modelo de domínio (uma entidade por arquivo)
 │   ├── patient.ts
 │   ├── doctor.ts
-│   ├── consultation.ts
+│   ├── appointments.ts
 │   ├── exam.ts
 │   └── medicalRecord.ts
 ├── docs/                   # Resumos de aula em Markdown

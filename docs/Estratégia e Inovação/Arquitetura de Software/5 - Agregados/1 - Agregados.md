@@ -2,7 +2,7 @@
 
 ## Introdução e contexto
 
-Já demos **dois passos** na compreensão dos elementos que compõem o modelo do domínio: as **entidades** — conceitos com **identidade única**, como `Patient`, `Doctor`, `Consultation`, `Exam` e `MedicalRecord` — e os **objetos de valor** — elementos **sem ID**, como `Address` e `EmergencyContact` (do paciente) e `WorkingHours` (do médico).
+Já demos **dois passos** na compreensão dos elementos que compõem o modelo do domínio: as **entidades** — conceitos com **identidade única**, como `Patient`, `Doctor`, `Appointment`, `Exam` e `MedicalRecord` — e os **objetos de valor** — elementos **sem ID**, como `Address` e `EmergencyContact` (do paciente) e `WorkingHours` (do médico).
 
 Agora entram os **agregados**. Eles nos ajudam a **estruturar o projeto** e a **manter a integridade do domínio**, trazem ainda mais clareza para decidir se algo é uma **entidade** ou um **objeto de valor** e representam **mais um grau de refatoração** no nosso código.
 
@@ -37,7 +37,7 @@ No sistema hospitalar dá para diagnosticar **dois agregados** importantes:
 
 | Agregado | Raiz | Entidades correlacionadas | Objetos de valor |
 | --- | --- | --- | --- |
-| **Paciente** | `Patient` | `Consultation`, `Exam` (+ histórico médico) | `Address`, `EmergencyContact` |
+| **Paciente** | `Patient` | `Appointment`, `Exam` (+ histórico médico) | `Address`, `EmergencyContact` |
 | **Médico** | `Doctor` | — | `WorkingHours` |
 
 O `Patient` é a raiz **natural** do agregado de paciente — é a necessidade mais importante do sistema. Para saber qual é a consulta, é preciso **navegar pelo paciente**; o mesmo vale para os exames. Os objetos de valor (`Address`, `EmergencyContact`) também estão associados a ele, assim como o **histórico médico**.
@@ -48,7 +48,7 @@ No agregado do médico, temos o próprio `Doctor` e o objeto de valor `WorkingHo
 flowchart TD
     subgraph PAC["Agregado Paciente"]
         P["Patient<br/>(raiz)"]
-        C["Consultation"]
+        C["Appointment"]
         E["Exam"]
         H["medicalHistory"]
         AD["Address<br/>(objeto de valor)"]
@@ -78,12 +78,12 @@ Os agregados trazem benefícios de curto e de **longo prazo**:
 
 ```mermaid
 flowchart LR
-    P["Patient"] -->|"1"| C["Consultation"] -->|"2"| E["Exam"]
+    P["Patient"] -->|"1"| C["Appointment"] -->|"2"| E["Exam"]
 ```
 
 ## O caso do prontuário: de entidade a objeto de valor
 
-Até aqui, `Patient`, `Exam`, `Consultation` e `MedicalRecord` foram diagnosticados como **entidades**. Mas a relação entre **prontuário** e **paciente** é forte o suficiente para reavaliar o prontuário.
+Até aqui, `Patient`, `Exam`, `Appointment` e `MedicalRecord` foram diagnosticados como **entidades**. Mas a relação entre **prontuário** e **paciente** é forte o suficiente para reavaliar o prontuário.
 
 Para ver o prontuário de um paciente, é preciso **passar pelo paciente** — é o paciente quem acessa o seu prontuário e, a partir dele, adicionamos um **diagnóstico**, um **tratamento** ou um **medicamento**. Além disso, o prontuário guarda **listas** (diagnósticos, tratamentos, medicamentos) que já vimos que poderiam ser **objetos de valor**.
 
@@ -95,7 +95,7 @@ A decisão da aula é **remover** o `id` e o `patientId` do prontuário e **amar
 | Listas de `string` | Listas de **objetos de valor** |
 | Igualdade não definida | Igualdade **por atributos** (`equals`) |
 
-> **Exceção:** `Exam` e `Consultation` **continuam entidades** com ID. Vale ter um ID para cada porque pode-se querer buscá-los individualmente — ex.: quantos hemogramas foram feitos hoje, ou quantas consultas um médico atendeu.
+> **Exceção:** `Exam` e `Appointment` **continuam entidades** com ID. Vale ter um ID para cada porque pode-se querer buscá-los individualmente — ex.: quantos hemogramas foram feitos hoje, ou quantas consultas um médico atendeu.
 
 ```mermaid
 flowchart TD
@@ -124,12 +124,12 @@ export class MedicalRecord {
 
 - Definir a **fronteira do agregado** é uma **decisão de projeto**: cabe a nós balancear o que entra e o que fica de fora.
 - Agregados **mal delimitados** tendem a ficar **grandes e pesados** de carregar — o ganho de desempenho depende de navegar apenas o necessário.
-- A refatoração **muda o modelo**: ao transformar o prontuário em objeto de valor, `Exam` e `Consultation` **mantêm** seus IDs.
+- A refatoração **muda o modelo**: ao transformar o prontuário em objeto de valor, `Exam` e `Appointment` **mantêm** seus IDs.
 
 ## Conclusão
 
 Os **agregados** são **grupos de entidades e objetos de valor relacionados**, tratados como **uma única unidade**, com uma **raiz** que controla o acesso a todo o agregado. Eles **delimitam as regras de negócio** e trazem **consistência, acesso simplificado e melhor desempenho**.
 
-No sistema hospitalar, chegamos a **dois agregados**: **Paciente** (raiz `Patient`, com `Consultation`, `Exam`, histórico médico, `Address` e `EmergencyContact`) e **Médico** (raiz `Doctor`, com o objeto de valor `WorkingHours`). E tomamos uma decisão de projeto importante: o **prontuário** deixa de ser entidade e passa a ser **objeto de valor** (`MedicalRecord`), sem ID, acessado pelo histórico do paciente — o que exige implementar o método `equals`.
+No sistema hospitalar, chegamos a **dois agregados**: **Paciente** (raiz `Patient`, com `Appointment`, `Exam`, histórico médico, `Address` e `EmergencyContact`) e **Médico** (raiz `Doctor`, com o objeto de valor `WorkingHours`). E tomamos uma decisão de projeto importante: o **prontuário** deixa de ser entidade e passa a ser **objeto de valor** (`MedicalRecord`), sem ID, acessado pelo histórico do paciente — o que exige implementar o método `equals`.
 
 Na **próxima aula**, colocamos a mão na massa: começamos a **implementar** essa refatoração.

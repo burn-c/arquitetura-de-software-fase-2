@@ -84,7 +84,7 @@ sequenceDiagram
     participant PS as Porta secundária (Repositório)
     participant AS as Adaptador de saída (Banco de Dados)
 
-    U->>PI: scheduleConsultation(patient, date, doctor)
+    U->>PI: scheduleAppointment(patient, date, doctor)
     PI->>D: executa a regra de negócio
     D->>D: valida conflito de horário
     D->>PS: solicita persistência
@@ -102,24 +102,24 @@ Ilustração de uma **porta** (interface = especificação) e de um **adaptador*
 ```typescript
 // Domain: the business rule lives here, isolated.
 class Patient {
-  #consultations: Consultation[] = [];
+  #appointments: Appointment[] = [];
 
-  scheduleConsultation(consultation: Consultation): void {
-    const conflict = this.#consultations.some(
-      (c) => c.date.getTime() === consultation.date.getTime(),
+  scheduleAppointment(appointment: Appointment): void {
+    const conflict = this.#appointments.some(
+      (c) => c.date.getTime() === appointment.date.getTime(),
     );
 
     if (conflict) {
       throw new Error(
-        "Patient already has a consultation scheduled at this time.",
+        "Patient already has an appointment scheduled at this time.",
       );
     }
 
-    this.#consultations.push(consultation);
+    this.#appointments.push(appointment);
   }
 
-  get consultations(): ReadonlyArray<Consultation> {
-    return [...this.#consultations];
+  get appointments(): ReadonlyArray<Appointment> {
+    return [...this.#appointments];
   }
 }
 
