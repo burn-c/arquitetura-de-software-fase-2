@@ -54,8 +54,8 @@ const appointment1 = new Appointment({
   notes: "Patient reported chest pain after physical exertion.",
 });
 
-doctor1.addWorkingHours({ day: "Monday", timeSlot: "08:00-12:00" });
-doctor1.addWorkingHours({ day: "Wednesday", timeSlot: "08:00-12:00" });
+doctor1.workingHours.hours.push({ day: "Monday", timeSlot: "08:00-12:00" });
+doctor1.workingHours.hours.push({ day: "Wednesday", timeSlot: "08:00-12:00" });
 
 const exam1 = new Exam({
   id: "301",
@@ -113,13 +113,13 @@ console.table([
   {
     Field: "Working days",
     Value:
-      doctor1.listWorkingHours.hours.map((h) => h.day).join(", ") || "-",
+      doctor1.workingHours.hours.map((h) => h.day).join(", ") || "-",
   },
 ]);
 
 console.log("Working hours:");
 console.table(
-  doctor1.listWorkingHours.hours.map((h, i) => ({
+  doctor1.workingHours.hours.map((h, i) => ({
     "#": i + 1,
     Day: h.day,
     "Time slot": h.timeSlot,

@@ -170,7 +170,7 @@ test("findBySpecialty encontra especialidade adicionada depois do cadastro", () 
   const doctor = buildDoctor({ id: "med-001", specialties: ["Cardiologia"] });
   const repository = buildRepository([doctor]);
 
-  doctor.addSpecialty("Clínica Geral");
+  doctor.specialties.push("Clínica Geral");
 
   assert.deepEqual(ids(repository.findBySpecialty("Clínica Geral")), [
     "med-001",

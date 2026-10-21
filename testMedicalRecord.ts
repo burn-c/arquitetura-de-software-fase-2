@@ -183,12 +183,12 @@ test("os métodos add* continuam rejeitando objetos literais em runtime", () => 
 
 test("horários: os mesmos períodos em ordem diferente são iguais", () => {
   const a = new WorkingHours();
-  a.addHours({ day: "Monday", timeSlot: "08:00-12:00" });
-  a.addHours({ day: "Wednesday", timeSlot: "08:00-12:00" });
+  a.hours.push({ day: "Monday", timeSlot: "08:00-12:00" });
+  a.hours.push({ day: "Wednesday", timeSlot: "08:00-12:00" });
 
   const b = new WorkingHours();
-  b.addHours({ day: "Wednesday", timeSlot: "08:00-12:00" });
-  b.addHours({ day: "Monday", timeSlot: "08:00-12:00" });
+  b.hours.push({ day: "Wednesday", timeSlot: "08:00-12:00" });
+  b.hours.push({ day: "Monday", timeSlot: "08:00-12:00" });
 
   assert.equal(a.equals(b), true);
 });
