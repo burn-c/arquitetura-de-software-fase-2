@@ -1,4 +1,4 @@
-import { type HourDTO, WorkingHours, type WorkingHoursDTO } from "./workingHours.ts";
+import { type HourDTO, WorkingHours, type WorkingHoursDTO } from "./WorkingHours.ts";
 
 interface DoctorDTO {
   id: string;

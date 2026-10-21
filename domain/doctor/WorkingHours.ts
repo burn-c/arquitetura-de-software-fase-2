@@ -1,4 +1,4 @@
-import { sameItems } from "./collectionEquality.ts";
+import { sameItems } from "../collectionEquality.ts";
 
 export interface WorkingHoursDTO {
   hours: Array<HourDTO>;

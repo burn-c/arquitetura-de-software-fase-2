@@ -1,13 +1,13 @@
-import { Address } from "./domain/address.ts";
-import { Appointment } from "./domain/appointments.ts";
-import { Diagnoses } from "./domain/diagnosis.ts";
-import { Medication } from "./domain/medication.ts";
-import { Treatment } from "./domain/treatment.ts";
-import { EmergencyContact } from "./domain/emergencyContact.ts";
-import { Exam } from "./domain/exam.ts";
-import { Doctor } from "./domain/doctor.ts";
-import { Patient } from "./domain/patient.ts";
-import { MedicalRecord } from "./domain/medicalRecord.ts";
+import { Address } from "./domain/shared/Address.ts";
+import { Appointment } from "./domain/patient/Appointments.ts";
+import { Diagnoses } from "./domain/patient/record/Diagnosis.ts";
+import { Medication } from "./domain/patient/record/Medication.ts";
+import { Treatment } from "./domain/patient/record/Treatment.ts";
+import { EmergencyContact } from "./domain/shared/EmergencyContact.ts";
+import { Exam } from "./domain/patient/Exam.ts";
+import { Doctor } from "./domain/doctor/Doctor.ts";
+import { Patient } from "./domain/patient/Patient.ts";
+import { MedicalRecord } from "./domain/patient/record/MedicalRecord.ts";
 
 console.log("Welcome to the Patient Management System!");
 

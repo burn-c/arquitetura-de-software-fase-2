@@ -1,13 +1,13 @@
-import type { AddressDTO } from "./address.ts";
-import { Allergy } from "./allergy.ts";
-import { Appointment } from "./appointments.ts";
-import { Diagnoses } from "./diagnosis.ts";
-import type { EmergencyContactDTO } from "./emergencyContact.ts";
-import { Exam } from "./exam.ts";
-import { MedicalRecord } from "./medicalRecord.ts";
-import { Medication } from "./medication.ts";
-import { Treatment } from "./treatment.ts";
-import type { TreatmentDTO } from "./treatment.ts";
+import type { AddressDTO } from "../shared/Address.ts";
+import { Allergy } from "./Allergy.ts";
+import { Appointment } from "./Appointments.ts";
+import { Diagnoses } from "./record/Diagnosis.ts";
+import type { EmergencyContactDTO } from "../shared/EmergencyContact.ts";
+import { Exam } from "./Exam.ts";
+import { MedicalRecord } from "./record/MedicalRecord.ts";
+import { Medication } from "./record/Medication.ts";
+import { Treatment } from "./record/Treatment.ts";
+import type { TreatmentDTO } from "./record/Treatment.ts";
 
 interface PatientDTO {
   id: string;

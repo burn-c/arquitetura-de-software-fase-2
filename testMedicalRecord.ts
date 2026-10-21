@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
-import { Address } from "./domain/address.ts";
-import { Diagnoses } from "./domain/diagnosis.ts";
-import { EmergencyContact } from "./domain/emergencyContact.ts";
-import { Medication } from "./domain/medication.ts";
-import { MedicalRecord } from "./domain/medicalRecord.ts";
-import { Treatment } from "./domain/treatment.ts";
-import { WorkingHours } from "./domain/workingHours.ts";
+import { Address } from "./domain/shared/Address.ts";
+import { Diagnoses } from "./domain/patient/record/Diagnosis.ts";
+import { EmergencyContact } from "./domain/shared/EmergencyContact.ts";
+import { Medication } from "./domain/patient/record/Medication.ts";
+import { MedicalRecord } from "./domain/patient/record/MedicalRecord.ts";
+import { Treatment } from "./domain/patient/record/Treatment.ts";
+import { WorkingHours } from "./domain/doctor/WorkingHours.ts";
 
 type Content = {
   diagnoses?: Array<string>;

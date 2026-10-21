@@ -1,8 +1,8 @@
-import { sameItems } from "./collectionEquality.ts";
-import type { DiagnosesDTO } from "./diagnosis.ts";
-import { Diagnoses } from "./diagnosis.ts";
-import { Medication } from "./medication.ts";
-import { Treatment } from "./treatment.ts";
+import { sameItems } from "../../collectionEquality.ts";
+import type { DiagnosesDTO } from "./Diagnosis.ts";
+import { Diagnoses } from "./Diagnosis.ts";
+import { Medication } from "./Medication.ts";
+import { Treatment } from "./Treatment.ts";
 
 export interface MedicalRecordDTO {
   readonly diagnoses: ReadonlyArray<DiagnosesDTO>;
