@@ -9,8 +9,9 @@
     "examples": "pnpm domain && pnpm hospital",
     "study": "node study_plan/server.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "node testMedicalRecord.ts && pnpm test:repositories",
-    "test:repositories": "node src/domain/doctor/DoctorRepository.test.ts && node src/domain/patient/AppointmentRepository.test.ts && node src/domain/patient/ExamRepository.test.ts && node src/domain/patient/PatientRepository.test.ts"
+    "test": "node testMedicalRecord.ts && pnpm test:repositories && pnpm test:domain",
+    "test:repositories": "node src/domain/doctor/DoctorRepository.test.ts && node src/domain/patient/AppointmentRepository.test.ts && node src/domain/patient/ExamRepository.test.ts && node src/domain/patient/PatientRepository.test.ts",
+    "test:domain": "node src/domain/patient/Patient.test.ts && node src/domain/patient/PatientService.test.ts"
   },
   "keywords": [],
   "author": "Burn (Carlos Oliveira)",
