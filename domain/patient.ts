@@ -76,12 +76,23 @@ export class Patient implements PatientDTO {
 
   // 3. Métodos no corpo da classe (fora do construtor).
   addAllergy(allergy: Allergy): void {
-    const exists = this.#allergies.some((a) => a.equals(allergy));
-    if (exists) {
-      throw new Error(`Allergy ${allergy.type} already exists for this patient.`);
+    if (!allergy || !(allergy instanceof Allergy)) {
+      throw new Error("Invalid allergy object.");
     }
+
+    const hasAllergy = this.#allergies.some((existing) =>
+      existing.equals(allergy)
+    );
+
+    if (hasAllergy) {
+      console.log(`Allergy "${allergy.type}" already exists for ${this.name}.`);
+      return;
+    }
+
     this.#allergies.push(allergy);
-    console.log(`Allergy ${allergy.type} added for ${this.name}.`);
+    console.log(
+      `Allergy "${allergy.type}" added to ${this.name}'s medical history.`,
+    );
   }
 
   addDiagnosis(diagnosis: Diagnoses): void {
@@ -90,6 +101,10 @@ export class Patient implements PatientDTO {
   }
 
   addExam(exam: Exam): void {
+    if (!exam || !(exam instanceof Exam)) {
+      throw new Error("Invalid exam object.");
+    }
+
     this.#exams.push(exam);
     console.log(
       `Exam ${exam.type} added for ${this.name} with result: ${exam.result}.`,
