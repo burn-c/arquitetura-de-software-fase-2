@@ -9,5 +9,5 @@
     "types": ["node"],
     "skipLibCheck": true
   },
-  "include": ["domain/**/*.ts", "testHospital.ts", "testMedicalRecord.ts"]
+  "include": ["src/domain/**/*.ts", "testHospital.ts", "testMedicalRecord.ts"]
 }
