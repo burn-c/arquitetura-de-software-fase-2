@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import { Patient } from "./Patient.ts";
 import { PatientRepository } from "./PatientRepository.ts";
+import {
+  createTestRunner,
+  showRepository,
+  showResults as printResults,
+} from "../../testing/testOutput.ts";
 
 // O construtor do Patient recebe um DTO; reaproveitamos o próprio tipo.
 type PatientInput = ConstructorParameters<typeof Patient>[0];
@@ -39,53 +44,19 @@ function buildRepository(patients: Patient[] = []): PatientRepository {
 
 /* ------------------------- visualização no terminal ------------------------ */
 
-// Mude para `false` se quiser a saída só com ok/FAIL.
-const SHOW_DATA = true;
-
 function toRow(patient: Patient) {
   return { id: patient.id, name: patient.name, bloodType: patient.bloodType };
 }
 
 function show(label: string, repository: PatientRepository): void {
-  if (!SHOW_DATA) return;
-
-  const rows = repository.findAll().map(toRow);
-  console.log(`\n--- ${label} ---`);
-  console.log(
-    `chaves: [${Array.from(repository.data.keys()).map((key) => `"${key}"`).join(", ")}]`,
-  );
-  if (rows.length === 0) {
-    console.log("(repositório vazio)");
-    return;
-  }
-  console.table(rows);
+  showRepository(label, repository, toRow);
 }
 
 function showResults(label: string, patients: ReadonlyArray<Patient>): void {
-  if (!SHOW_DATA) return;
-
-  console.log(`\n--- ${label} · ${patients.length} resultado(s) ---`);
-  if (patients.length === 0) {
-    console.log("(nenhum paciente)");
-    return;
-  }
-  console.table(patients.map(toRow));
+  printResults(label, patients, toRow, "(nenhum paciente)");
 }
 
-let passed = 0;
-let failed = 0;
-
-function test(name: string, run: () => void): void {
-  try {
-    run();
-    passed += 1;
-    console.log(`ok   ${name}`);
-  } catch (error) {
-    failed += 1;
-    console.error(`FAIL ${name}`);
-    console.error(`     ${error instanceof Error ? error.message : error}`);
-  }
-}
+const { test, run } = createTestRunner("PatientRepository");
 
 test("o repositório começa vazio", () => {
   const repository = new PatientRepository();
@@ -283,8 +254,4 @@ test("após delete, o mesmo id pode ser adicionado novamente", () => {
   show("depois de readicionar o id \"1\"", repository);
 });
 
-console.log(`\n${passed} passaram, ${failed} falharam`);
-
-if (failed > 0) {
-  process.exit(1);
-}
+run();

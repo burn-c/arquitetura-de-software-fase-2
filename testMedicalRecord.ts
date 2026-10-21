@@ -6,6 +6,7 @@ import { Medication } from "./src/domain/patient/record/Medication.ts";
 import { MedicalRecord } from "./src/domain/patient/record/MedicalRecord.ts";
 import { Treatment } from "./src/domain/patient/record/Treatment.ts";
 import { WorkingHours } from "./src/domain/doctor/WorkingHours.ts";
+import { createTestRunner } from "./src/testing/testOutput.ts";
 
 type Content = {
   diagnoses?: Array<string>;
@@ -49,20 +50,7 @@ const fullContent: Content = {
   medications: [{ name: "Lisinopril", dosage: "10mg" }],
 };
 
-let passed = 0;
-let failed = 0;
-
-function test(name: string, run: () => void): void {
-  try {
-    run();
-    passed += 1;
-    console.log(`ok   ${name}`);
-  } catch (error) {
-    failed += 1;
-    console.error(`FAIL ${name}`);
-    console.error(`     ${error instanceof Error ? error.message : error}`);
-  }
-}
+const { test, run } = createTestRunner("MedicalRecord");
 
 test("prontuários com o mesmo conteúdo são iguais", () => {
   const a = build(fullContent);
@@ -221,8 +209,4 @@ test("horários: duplicatas são respeitadas", () => {
   assert.equal(a.equals(b), false);
 });
 
-console.log(`\n${passed} passaram, ${failed} falharam`);
-
-if (failed > 0) {
-  process.exit(1);
-}
+run();
