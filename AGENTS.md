@@ -41,6 +41,10 @@ docs/
 - Use seções `##`. Fluxo padrão: Introdução e contexto → conceitos →
   benefícios → limitações → conclusão/gancho para a próxima aula.
 - Destaque termos-chave com `**negrito**` e referências cruzadas com *itálico*.
+- **Sempre inclua ao menos um diagrama Mermaid** em cada nota criada ou
+  atualizada em `docs/`, mesmo que nenhuma imagem de referência seja enviada.
+  O diagrama deve representar o conceito central da aula (estrutura, fluxo ou
+  sequência) e agregar entendimento, não apenas repetir o texto.
 - Prefira tabelas para comparações e blocos **Mermaid** para diagramas
   (`flowchart`, `sequenceDiagram`). Os diagramas devem renderizar no GitHub.
 
