@@ -129,8 +129,15 @@ pnpm typecheck
 ├── docs/                   # Resumos de aula em Markdown
 │   └── Estratégia e Inovação/
 │       └── Arquitetura de Software/
+│           ├── 1 - Introdução/
+│           ├── 2 - Conceitos Fundamentais/
 │           ├── 3 - Arquitetura do Domínio/
-│           └── 4 - Entidades e Objetos de Valor/
+│           ├── 4 - Entidades e Objetos de Valor/
+│           ├── 5 - Agregados/
+│           ├── 6 - Repositórios e Serviços/
+│           ├── 7 - Integração e Aplicação/
+│           ├── 8 - Conceitos Avançados/
+│           └── 9 - Conclusão/
 ├── testHospital.ts         # Cenário de integração das entidades
 ├── tsconfig.json
 ├── AGENTS.md               # Diretrizes e convenções do projeto
