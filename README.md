@@ -37,7 +37,7 @@ O repositório combina duas partes:
 
 - 📓 **Resumos de aula** em Markdown, dentro de `docs/`, cobrindo o conteúdo
   teórico e diagramas (Mermaid).
-- 🧩 **Modelo de domínio** em **TypeScript**, dentro de `domain/`, aplicando as
+- 🧩 **Modelo de domínio** em **TypeScript**, dentro de `src/`, aplicando as
   práticas de **Domain-Driven Design (DDD)** em um contexto de exemplo: um
   **sistema hospitalar**.
 
@@ -55,7 +55,7 @@ uma arte que se aprende praticando.
 
 ## 🏥 Modelo de domínio
 
-O domínio fica em `domain/`, com **um arquivo por entidade ou objeto de valor**. O contexto de
+O domínio fica em `src/domain/`, com **um arquivo por entidade ou objeto de valor**. O contexto de
 exemplo é um **sistema hospitalar**:
 
 | Conceito | Tipo | Responsabilidade |
@@ -91,10 +91,10 @@ git clone https://github.com/burn-c/arquitetura-de-software-fase-2.git
 pnpm install
 ```
 
-3. Rode os exemplos:
+3. Rode os exemplos e os testes:
 
 ```bash
-# Demonstração de todas as entidades
+# Demonstrações dos objetos de valor e entidades
 pnpm domain
 
 # Cenário de integração do sistema hospitalar
@@ -103,12 +103,17 @@ pnpm hospital
 # Os dois acima
 pnpm examples
 
+# Testes (prontuário, repositórios, entidades e serviços)
+pnpm test
+
 # Verificação de tipos
 pnpm typecheck
 ```
 
-> Cada arquivo em `domain/` também pode ser executado individualmente, por
-> exemplo: `node domain/patient.ts`.
+> Os cenários de `testCase/` também podem ser executados individualmente, por
+> exemplo: `node testCase/testHospital.ts`. Arquivos do domínio com bloco de
+> demonstração (`import.meta.main`) seguem o mesmo padrão, por exemplo:
+> `node src/domain/entities/Exam.ts`.
 
 ## 🛠 Tecnologias
 
@@ -120,13 +125,51 @@ pnpm typecheck
 
 ```
 .
-├── domain/                 # Modelo de domínio (uma entidade por arquivo)
-│   ├── patient.ts
-│   ├── doctor.ts
-│   ├── appointments.ts
-│   ├── exam.ts
-│   └── medicalRecord.ts
-├── docs/                   # Resumos de aula em Markdown
+├── src/
+│   ├── application/
+│   │   └── services/
+│   │       └── AppointmentService.ts   # Caso de uso de agendamento
+│   ├── domain/
+│   │   ├── collectionEquality.ts
+│   │   ├── entities/                   # Entidades e raízes de agregado
+│   │   │   ├── Appointments.ts
+│   │   │   ├── Doctor.ts
+│   │   │   ├── Exam.ts
+│   │   │   └── Patient.ts
+│   │   ├── repositories/
+│   │   │   └── Repository.ts           # Base em memória dos repositórios
+│   │   ├── services/                   # Serviços de domínio
+│   │   │   ├── DoctorAvailabilityService.ts
+│   │   │   ├── DoctorService.ts
+│   │   │   ├── ExamService.ts
+│   │   │   └── PatientService.ts
+│   │   └── value-objects/              # Objetos de valor
+│   │       ├── Address.ts
+│   │       ├── Allergy.ts
+│   │       ├── EmergencyContact.ts
+│   │       ├── WorkingHours.ts
+│   │       └── medical-record/
+│   │           ├── Diagnosis.ts
+│   │           ├── MedicalRecord.ts
+│   │           ├── Medication.ts
+│   │           └── Treatment.ts
+│   ├── infrastructure/
+│   │   ├── notification/
+│   │   │   └── NotificationService.ts  # Adaptador de e-mail
+│   │   └── persistence/                # Repositórios concretos em memória
+│   │       ├── AppointmentRepository.ts
+│   │       ├── DoctorRepository.ts
+│   │       ├── ExamRepository.ts
+│   │       └── PatientRepository.ts
+│   └── testing/
+│       └── testOutput.ts               # Runner e formatação dos testes
+├── testCase/                           # Cenários executáveis
+│   ├── entities.ts
+│   ├── repositories.ts
+│   ├── service.ts
+│   ├── testHospital.ts
+│   └── testMedicalRecord.ts
+├── docs/                               # Resumos de aula em Markdown
 │   └── Estratégia e Inovação/
 │       └── Arquitetura de Software/
 │           ├── 1 - Introdução/
@@ -138,11 +181,13 @@ pnpm typecheck
 │           ├── 7 - Integração e Aplicação/
 │           ├── 8 - Conceitos Avançados/
 │           └── 9 - Conclusão/
-├── testHospital.ts         # Cenário de integração das entidades
 ├── tsconfig.json
-├── AGENTS.md               # Diretrizes e convenções do projeto
+├── AGENTS.md                           # Diretrizes e convenções do projeto
 └── package.json
 ```
+
+> Os testes `*.test.ts` ficam ao lado do arquivo que exercitam, dentro da
+> camada correspondente.
 
 ## 📝 Convenções
 
