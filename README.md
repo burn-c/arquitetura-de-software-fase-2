@@ -170,7 +170,9 @@ pnpm start
 │   ├── interfaces/
 │   │   ├── apiRouter.ts                # Montagem das rotas
 │   │   └── controllers/
-│   │       ├── PatientController.ts    # Adaptador de entrada REST (Express)
+│   │       ├── AppointmentController.ts # Agendamento de consultas (Express)
+│   │       ├── ExamController.ts        # Exames e filtros (Express)
+│   │       ├── PatientController.ts     # Adaptador de entrada REST (Express)
 │   │       └── doctor-controllers/
 │   │           ├── DoctorAvailabilityController.ts
 │   │           ├── DoctorController.ts
