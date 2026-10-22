@@ -1,28 +1,30 @@
+import type { HourDTO } from "../value-objects/WorkingHours.ts";
 import { Doctor } from "../entities/Doctor.ts";
 import { DoctorRepository } from "../../infrastructure/persistence/DoctorRepository.ts";
 
 export class DoctorService {
   private readonly doctorRepository: DoctorRepository;
+
   constructor(doctorRepository: DoctorRepository) {
     this.doctorRepository = doctorRepository;
   }
 
-    addDoctor(doctorData: Doctor) {
+  addDoctor(doctorData: Doctor): Doctor {
     const doctor = new Doctor(doctorData);
 
     this.doctorRepository.add(doctor.id, doctor);
     return doctor;
   }
 
-  findDoctorById(doctorId:string) {
+  findDoctorById(doctorId: string): Doctor | undefined {
     return this.doctorRepository.findById(doctorId);
   }
 
-  findAllDoctors() {
+  findAllDoctors(): Doctor[] {
     return this.doctorRepository.findAll();
   }
 
-  updateDoctor(doctorId: string, updatedData: Partial<Doctor>) {
+  updateDoctor(doctorId: string, updatedData: Partial<Doctor>): Doctor {
     const doctor = this.doctorRepository.findById(doctorId);
     if (!doctor) {
       throw new Error('Doctor not found');
@@ -34,7 +36,7 @@ export class DoctorService {
     return doctor;
   }
 
-  deleteDoctor(doctorId:string) {
+  deleteDoctor(doctorId: string): Doctor {
     const doctor = this.doctorRepository.findById(doctorId);
     if (!doctor) {
       throw new Error('Doctor not found');
@@ -44,8 +46,12 @@ export class DoctorService {
     return doctor;
   }
 
-  addDoctorWorkingHours(doctorId: string, day: string, timeSlot: string) {
-    const doctor = this.doctorRepository.findById(doctorId) as Doctor;
+  addDoctorWorkingHours(
+    doctorId: string,
+    day: string,
+    timeSlot: string
+  ): Doctor {
+    const doctor = this.doctorRepository.findById(doctorId);
     if (!doctor) {
       throw new Error('Doctor not found');
     }
@@ -64,8 +70,12 @@ export class DoctorService {
     return doctor;
   }
 
-  removeWorkingHours(doctorId: string, day: string, timeSlot: string) {
-    const doctor = this.doctorRepository.findById(doctorId) as Doctor;
+  removeWorkingHours(
+    doctorId: string,
+    day: string,
+    timeSlot: string
+  ): Doctor {
+    const doctor = this.doctorRepository.findById(doctorId);
     if (!doctor) {
       throw new Error('Doctor not found');
     }
@@ -92,11 +102,12 @@ export class DoctorService {
     return doctor;
   }
 
-  listWorkingHours(doctorId: string) {
+  listWorkingHours(doctorId: string): HourDTO[] {
     const doctor = this.doctorRepository.findById(doctorId);
     if (!doctor) {
       throw new Error('Doctor not found');
     }
 
     return doctor.workingHours.hours;
-  }}
+  }
+}

@@ -1,4 +1,4 @@
-type AppointmentStatus = "scheduled" | "completed" | "canceled";
+export type AppointmentStatus = "scheduled" | "completed" | "canceled";
 
 interface AppointmentDTO {
   id: string;

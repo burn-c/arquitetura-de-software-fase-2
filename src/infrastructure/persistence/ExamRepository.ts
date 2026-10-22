@@ -1,7 +1,7 @@
-import { Repository } from "../../domain/repositories/Repository.ts";
 import { Exam } from "../../domain/entities/Exam.ts";
+import { Repository } from "../../domain/repositories/Repository.ts";
 
-export class ExamRepository extends Repository {
+export class ExamRepository extends Repository<Exam> {
   constructor() {
     super();
   }

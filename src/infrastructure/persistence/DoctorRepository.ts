@@ -1,15 +1,16 @@
+import { Doctor } from "../../domain/entities/Doctor.ts";
 import { Repository } from "../../domain/repositories/Repository.ts";
 
-export class DoctorRepository extends Repository {
+export class DoctorRepository extends Repository<Doctor> {
   constructor() {
     super();
   }
 
-  findByName(name: string): any[] {
+  findByName(name: string): Doctor[] {
     return this.findAll().filter((doctor) => doctor.name === name);
   }
 
-  findBySpecialty(specialty: string): any[] {
+  findBySpecialty(specialty: string): Doctor[] {
     return this.findAll().filter((doctor) =>
       doctor.specialties.includes(specialty)
     );

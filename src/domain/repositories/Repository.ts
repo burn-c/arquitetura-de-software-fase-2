@@ -1,32 +1,33 @@
-export class Repository {
-  data: Map<string, any>
+export class Repository<T> {
+  data: Map<string, T>;
+
   constructor() {
     this.data = new Map();
   }
 
-  add(id: string, entity: any) {
+  add(id: string, entity: T): void {
     if (this.data.has(id)) {
       throw new Error(`Entity with id ${id} already exists.`);
     }
     this.data.set(id, entity);
   }
 
-  findById(id: string): any | undefined {
+  findById(id: string): T | undefined {
     return this.data.get(id);
   }
 
-  findAll(): any[] {
+  findAll(): T[] {
     return Array.from(this.data.values());
   }
 
-  update(id: string, entity: any) {
+  update(id: string, entity: T): void {
     if (!this.data.has(id)) {
       throw new Error(`Entity with id ${id} does not exist.`);
     }
     this.data.set(id, entity);
   }
 
-  delete(id: string) {
+  delete(id: string): void {
     if (!this.data.has(id)) {
       throw new Error(`Entity with id ${id} does not exist.`);
     }
