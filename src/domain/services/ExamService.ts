@@ -1,4 +1,8 @@
-import { Exam } from "../entities/Exam.ts";
+import {
+  Exam,
+  type CreateExamDTO,
+  type UpdateExamDTO,
+} from "../entities/Exam.ts";
 import { ExamRepository } from "../../infrastructure/persistence/ExamRepository.ts";
 
 export class ExamService {
@@ -8,7 +12,7 @@ export class ExamService {
     this.examRepository = examRepository;
   }
 
-  scheduleExam(examData: Exam): Exam {
+  scheduleExam(examData: CreateExamDTO): Exam {
     const exam = new Exam(examData);
 
     this.examRepository.add(exam.id, exam);
@@ -17,6 +21,10 @@ export class ExamService {
 
   findExamById(id: string): Exam | undefined {
     return this.examRepository.findById(id);
+  }
+
+  findAllExams(): Exam[] {
+    return this.examRepository.findAll();
   }
 
   findExamsByPatientId(patientId: string): Exam[] {
@@ -31,7 +39,7 @@ export class ExamService {
     return this.examRepository.findByDate(date);
   }
 
-  updateExam(examId: string, updatedData: Partial<Exam>): Exam {
+  updateExam(examId: string, updatedData: UpdateExamDTO): Exam {
     const exam = this.findExamById(examId);
     if (!exam) {
       throw new Error("Exam not found.");

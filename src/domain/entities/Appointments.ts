@@ -1,6 +1,4 @@
-export type AppointmentStatus = "scheduled" | "completed" | "canceled";
-
-interface AppointmentDTO {
+export interface AppointmentDTO {
   id: string;
   date: Date;
   patientId: string;
@@ -10,10 +8,12 @@ interface AppointmentDTO {
   notes?: string;
 }
 
-// Opção do construtor: o status é opcional e assume "scheduled" por padrão.
-type CreateAppointmentDTO = Omit<AppointmentDTO, "status"> & {
+// O status é opcional na criação e assume "scheduled" por padrão.
+export type CreateAppointmentDTO = Omit<AppointmentDTO, "status"> & {
   status?: AppointmentStatus;
 };
+
+export type AppointmentStatus = "scheduled" | "completed" | "canceled";
 
 export class Appointment implements AppointmentDTO {
   id: string;

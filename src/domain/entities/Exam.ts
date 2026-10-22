@@ -1,4 +1,4 @@
-interface ExamDTO {
+export interface ExamDTO {
   id: string;
   type: string;
   result: string;
@@ -8,7 +8,9 @@ interface ExamDTO {
   patientId: string;
 }
 
-type CreateExamDTO = ExamDTO;
+export type CreateExamDTO = ExamDTO;
+
+export type UpdateExamDTO = Partial<Omit<CreateExamDTO, "id">>;
 
 export class Exam implements ExamDTO {
   id: string;

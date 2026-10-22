@@ -36,6 +36,16 @@ test("scheduleExam guarda e devolve o exame", () => {
   assert.equal(service.findExamById("exa-001"), exam);
 });
 
+test("findAllExams devolve todos na ordem de inserção", () => {
+  const service = createService();
+  service.scheduleExam(buildExam({ id: "exa-002" }));
+  service.scheduleExam(buildExam({ id: "exa-001" }));
+
+  assert.deepEqual(ids(service.findAllExams()), ["exa-002", "exa-001"]);
+  assert.deepEqual(createService().findAllExams(), []);
+});
+
+
 test("findExamById devolve undefined para um id inexistente", () => {
   const service = createService();
   service.scheduleExam(buildExam());
