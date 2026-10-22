@@ -10,10 +10,12 @@ export interface HourDTO {
 }
 
 export class WorkingHours implements WorkingHoursDTO {
-  constructor() {
-    this.hours = [];
-  }
   hours: HourDTO[];
+
+  constructor(hours: HourDTO[] = []) {
+    this.hours = [...hours];
+  }
+
   equals(other: WorkingHours): boolean {
     return sameItems(
       this.hours,

@@ -2,8 +2,9 @@ import assert from "node:assert/strict";
 import { Appointment } from "../../domain/entities/Appointments.ts";
 import { Doctor } from "../../domain/entities/Doctor.ts";
 import type { CreatePatientDTO } from "../../domain/entities/Patient.ts";
-import { DoctorAvailabilityService } from "../../domain/services/DoctorAvailabilityService.ts";
-import { DoctorService } from "../../domain/services/DoctorService.ts";
+import { DoctorAvailabilityService } from "../../domain/services/doctor-services/DoctorAvailabilityService.ts";
+import { DoctorService } from "../../domain/services/doctor-services/DoctorService.ts";
+import { DoctorWorkingHoursService } from "../../domain/services/doctor-services/DoctorWorkingHoursService.ts";
 import { PatientService } from "../../domain/services/PatientService.ts";
 import { NotificationService } from "../../infrastructure/notification/NotificationService.ts";
 import { AppointmentRepository } from "../../infrastructure/persistence/AppointmentRepository.ts";
@@ -74,10 +75,15 @@ function buildAppointment(
 function createContext() {
   const appointmentRepository = new AppointmentRepository();
   const patientService = new PatientService(new PatientRepository());
-  const doctorService = new DoctorService(new DoctorRepository());
+  const doctorRepository = new DoctorRepository();
+  const doctorService = new DoctorService(doctorRepository);
+  const doctorWorkingHoursService = new DoctorWorkingHoursService(
+    doctorRepository,
+  );
   const doctorAvailabilityService = new DoctorAvailabilityService(
     appointmentRepository,
     doctorService,
+    doctorWorkingHoursService,
   );
   const appointmentService = new AppointmentService(
     patientService,
@@ -87,7 +93,13 @@ function createContext() {
     new NotificationService(),
   );
 
-  return { appointmentService, appointmentRepository, patientService, doctorService };
+  return {
+    appointmentService,
+    appointmentRepository,
+    patientService,
+    doctorService,
+    doctorWorkingHoursService,
+  };
 }
 
 // Agenda um paciente e um médico com atendimento na sexta-feira.
@@ -95,7 +107,7 @@ function seed(context: ReturnType<typeof createContext>) {
   const patient = context.patientService.addPatient(buildPatient());
   const doctor = context.doctorService.addDoctor(buildDoctor());
 
-  context.doctorService.addDoctorWorkingHours(
+  context.doctorWorkingHoursService.addWorkingHours(
     doctor.id,
     "Friday",
     "09:00 AM - 05:00 PM",

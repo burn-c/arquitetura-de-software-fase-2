@@ -1,6 +1,6 @@
 import type { Appointment } from "../../domain/entities/Appointments.ts";
-import type { DoctorAvailabilityService } from "../../domain/services/DoctorAvailabilityService.ts";
-import type { DoctorService } from "../../domain/services/DoctorService.ts";
+import type { DoctorAvailabilityService } from "../../domain/services/doctor-services/DoctorAvailabilityService.ts";
+import type { DoctorService } from "../../domain/services/doctor-services/DoctorService.ts";
 import type { PatientService } from "../../domain/services/PatientService.ts";
 import type { AppointmentRepository } from "../../infrastructure/persistence/AppointmentRepository.ts";
 import type { NotificationService } from "../../infrastructure/notification/NotificationService.ts";
@@ -39,14 +39,8 @@ export class AppointmentService {
       throw new Error("Doctor not found.");
     }
 
-    const isDoctorAvailable = this.doctorAvailabilityService.isDoctorAvailable(
-      doctor.id,
-      date
-    );
-
-    if (!isDoctorAvailable) {
-      throw new Error("Doctor is not available at the specified date and time.");
-    }
+    // O serviço de disponibilidade lança exceção quando o médico não pode atender.
+    this.doctorAvailabilityService.isDoctorAvailable(doctor.id, date);
 
     // A entidade valida o conflito do paciente antes de a consulta ser persistida.
     patient.scheduleAppointment(appointment);

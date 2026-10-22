@@ -1,16 +1,27 @@
-import { type HourDTO, WorkingHours, type WorkingHoursDTO } from "../value-objects/WorkingHours.ts";
+import { WorkingHours } from "../value-objects/WorkingHours.ts";
 
-interface DoctorDTO {
+export interface DoctorDTO {
   id: string;
   rcm: string;
   name: string;
   specialties: ReadonlyArray<string>;
   phone: string;
+  workingHours: WorkingHours;
 }
 
-type CreateDoctorDTO = Omit<DoctorDTO, "specialties"> & {
-  specialties: string[];
+export type CreateDoctorDTO = Omit<
+  DoctorDTO,
+  "specialties" | "workingHours"
+> & {
+  specialties?: string[];
+  workingHours?: WorkingHours;
 };
+
+// A atualização cadastral não pode trocar a identidade nem substituir o objeto
+// de valor de horários: essas mudanças passam pelos serviços específicos.
+export type UpdateDoctorDTO = Partial<
+  Omit<CreateDoctorDTO, "id" | "workingHours">
+>;
 
 export class Doctor implements DoctorDTO {
   id: string;
@@ -24,8 +35,8 @@ export class Doctor implements DoctorDTO {
     this.id = data.id;
     this.rcm = data.rcm;
     this.name = data.name;
-    this.specialties = data.specialties;
+    this.specialties = data.specialties ? [...data.specialties] : [];
     this.phone = data.phone;
-    this.workingHours = new WorkingHours();
+    this.workingHours = data.workingHours ?? new WorkingHours();
   }
 }

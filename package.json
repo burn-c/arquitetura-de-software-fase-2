@@ -12,7 +12,7 @@
     "test": "node testCase/testMedicalRecord.ts && pnpm test:repositories && pnpm test:domain && pnpm test:services",
     "test:repositories": "node src/infrastructure/persistence/DoctorRepository.test.ts && node src/infrastructure/persistence/AppointmentRepository.test.ts && node src/infrastructure/persistence/ExamRepository.test.ts && node src/infrastructure/persistence/PatientRepository.test.ts",
     "test:domain": "node src/domain/entities/Doctor.test.ts && node src/domain/value-objects/WorkingHours.test.ts && node src/domain/entities/Patient.test.ts",
-    "test:services": "node src/domain/services/DoctorService.test.ts && node src/domain/services/ExamService.test.ts && node src/domain/services/PatientService.test.ts && node src/application/services/AppointmentService.test.ts"
+    "test:services": "node src/domain/services/doctor-services/DoctorService.test.ts && node src/domain/services/doctor-services/DoctorSpecialtyService.test.ts && node src/domain/services/doctor-services/DoctorWorkingHoursService.test.ts && node src/domain/services/doctor-services/DoctorAvailabilityService.test.ts && node src/domain/services/ExamService.test.ts && node src/domain/services/PatientService.test.ts && node src/application/services/AppointmentService.test.ts"
   },
   "keywords": [],
   "author": "Burn (Carlos Oliveira)",
