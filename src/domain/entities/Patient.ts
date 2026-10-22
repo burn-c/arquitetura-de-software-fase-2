@@ -1,7 +1,6 @@
 import type { AddressDTO } from "../value-objects/Address.ts";
 import { Allergy } from "../value-objects/Allergy.ts";
 import { Appointment } from "./Appointments.ts";
-import { Diagnoses } from "../value-objects/medical-record/Diagnosis.ts";
 import type { EmergencyContactDTO } from "../value-objects/EmergencyContact.ts";
 import { Exam } from "./Exam.ts";
 import { MedicalRecord } from "../value-objects/medical-record/MedicalRecord.ts";
@@ -29,9 +28,14 @@ interface PatientDTO {
 }
 
 // Opção do construtor: apenas os dados necessários para criar um paciente, sem os métodos e sem as coleções de consultas/exames.
-type CreatePatientDTO = Omit<
+export type CreatePatientDTO = Omit<
   PatientDTO,
-  "appointments" | "exams" | "allergies" | "medicalRecord" | "scheduleAppointment" | "addExam"
+  | "appointments"
+  | "exams"
+  | "allergies"
+  | "medicalRecord"
+  | "scheduleAppointment"
+  | "addExam"
 >;
 
 export class Patient implements PatientDTO {

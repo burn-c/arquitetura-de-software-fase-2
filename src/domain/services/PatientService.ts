@@ -1,5 +1,5 @@
 import { Allergy } from "../value-objects/Allergy.ts";
-import { Patient } from "../entities/Patient.ts";
+import { Patient, type CreatePatientDTO } from "../entities/Patient.ts";
 import { PatientRepository } from "../../infrastructure/persistence/PatientRepository.ts";
 import { Diagnoses } from "../value-objects/medical-record/Diagnosis.ts";
 import { Medication } from "../value-objects/medical-record/Medication.ts";
@@ -12,7 +12,7 @@ export class PatientService {
     this.patientRepository = patientRepository;
   }
 
-  addPatient(patientData: Patient): Patient {
+  addPatient(patientData: CreatePatientDTO): Patient {
     const patient = new Patient(patientData);
     this.patientRepository.add(patient.id, patient);
 

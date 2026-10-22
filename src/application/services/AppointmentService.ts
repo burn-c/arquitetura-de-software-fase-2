@@ -27,11 +27,7 @@ export class AppointmentService {
   }
 
   execute(appointment: Appointment): Appointment {
-    const date = appointment.date;
-    if (!(date instanceof Date) || isNaN(date.getTime())) {
-      throw new Error("Invalid date.");
-    }
-
+    const date = this.checkDate(appointment);
     const patient = this.patientService.findPatientById(appointment.patientId);
     const doctor = this.doctorService.findDoctorById(appointment.doctorId);
 
@@ -44,7 +40,7 @@ export class AppointmentService {
     }
 
     const isDoctorAvailable = this.doctorAvailabilityService.isDoctorAvailable(
-      appointment.doctorId,
+      doctor.id,
       date
     );
 
@@ -52,12 +48,39 @@ export class AppointmentService {
       throw new Error("Doctor is not available at the specified date and time.");
     }
 
+    // A entidade valida o conflito do paciente antes de a consulta ser persistida.
+    patient.scheduleAppointment(appointment);
     this.appointmentRepository.add(appointment.id, appointment);
     this.notificationService.notifyAppointmentScheduled(
       appointment,
       patient,
       doctor
     );
+
     return appointment;
+  }
+
+  findById(id: string): Appointment {
+    const appointment = this.appointmentRepository.findById(id);
+
+    if (!appointment) {
+      throw new Error("Appointment not found.");
+    }
+
+    return appointment;
+  }
+
+  findAll(): Appointment[] {
+    return this.appointmentRepository.findAll();
+  }
+
+  private checkDate(appointment: Appointment): Date {
+    const date = appointment.date;
+
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+      throw new Error("Invalid date.");
+    }
+
+    return date;
   }
 }
