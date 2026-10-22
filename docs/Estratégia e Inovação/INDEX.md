@@ -3,3 +3,4 @@
 ## Índice
 
 - [Arquitetura de Software](./Arquitetura%20de%20Software/INDEX.md)
+- [Observabilidade](./Observabilidade/INDEX.md)
