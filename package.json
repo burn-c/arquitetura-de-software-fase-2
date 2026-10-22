@@ -5,14 +5,14 @@
   "main": "index.js",
   "scripts": {
     "domain": "for f in src/domain/*.ts; do node \"$f\"; done",
-    "hospital": "node testHospital.ts",
+    "hospital": "node testCases/testHospital.ts",
     "examples": "pnpm domain && pnpm hospital",
     "study": "node study_plan/server.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "node testMedicalRecord.ts && pnpm test:repositories && pnpm test:domain && pnpm test:services",
-    "test:repositories": "node src/domain/doctor/DoctorRepository.test.ts && node src/domain/patient/AppointmentRepository.test.ts && node src/domain/patient/ExamRepository.test.ts && node src/domain/patient/PatientRepository.test.ts",
-    "test:domain": "node src/domain/doctor/Doctor.test.ts && node src/domain/doctor/WorkingHours.test.ts && node src/domain/patient/Patient.test.ts",
-    "test:services": "node src/domain/doctor/DoctorService.test.ts && node src/domain/patient/ExamService.test.ts && node src/domain/patient/PatientService.test.ts"
+    "test": "node testCases/testMedicalRecord.ts && pnpm test:repositories && pnpm test:domain && pnpm test:services",
+    "test:repositories": "node src/infrastructure/persistence/DoctorRepository.test.ts && node src/infrastructure/persistence/AppointmentRepository.test.ts && node src/infrastructure/persistence/ExamRepository.test.ts && node src/infrastructure/persistence/PatientRepository.test.ts",
+    "test:domain": "node src/domain/entities/Doctor.test.ts && node src/domain/value-objects/WorkingHours.test.ts && node src/domain/entities/Patient.test.ts",
+    "test:services": "node src/domain/services/DoctorService.test.ts && node src/domain/services/ExamService.test.ts && node src/domain/services/PatientService.test.ts"
   },
   "keywords": [],
   "author": "Burn (Carlos Oliveira)",

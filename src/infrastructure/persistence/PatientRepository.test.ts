@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { Patient } from "./Patient.ts";
+import { Patient } from "../../domain/entities/Patient.ts";
 import { PatientRepository } from "./PatientRepository.ts";
 import {
   createTestRunner,

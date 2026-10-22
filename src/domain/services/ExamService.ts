@@ -1,5 +1,5 @@
-import { Exam } from "./Exam.ts";
-import { ExamRepository } from "./ExamRepository.ts";
+import { Exam } from "../entities/Exam.ts";
+import { ExamRepository } from "../../infrastructure/persistence/ExamRepository.ts";
 
 export class ExamService {
   private examRepository: ExamRepository;

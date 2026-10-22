@@ -1,5 +1,5 @@
-import { Doctor } from "./Doctor.ts";
-import { DoctorRepository } from "./DoctorRepository.ts";
+import { Doctor } from "../entities/Doctor.ts";
+import { DoctorRepository } from "../../infrastructure/persistence/DoctorRepository.ts";
 
 export class DoctorService {
   private readonly doctorRepository: DoctorRepository;

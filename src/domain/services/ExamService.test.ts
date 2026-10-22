@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { Exam } from "./Exam.ts";
-import { ExamRepository } from "./ExamRepository.ts";
+import { Exam } from "../entities/Exam.ts";
+import { ExamRepository } from "../../infrastructure/persistence/ExamRepository.ts";
 import { ExamService } from "./ExamService.ts";
 import { createTestRunner } from "../../testing/testOutput.ts";
 

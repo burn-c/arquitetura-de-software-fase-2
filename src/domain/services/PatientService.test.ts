@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
-import { Allergy } from "./Allergy.ts";
-import { Patient } from "./Patient.ts";
-import { PatientRepository } from "./PatientRepository.ts";
+import { Allergy } from "../value-objects/Allergy.ts";
+import { Patient } from "../entities/Patient.ts";
+import { PatientRepository } from "../../infrastructure/persistence/PatientRepository.ts";
 import { PatientService } from "./PatientService.ts";
-import { Diagnoses } from "./record/Diagnosis.ts";
-import { Medication } from "./record/Medication.ts";
-import { Treatment } from "./record/Treatment.ts";
+import { Diagnoses } from "../value-objects/medical-record/Diagnosis.ts";
+import { Medication } from "../value-objects/medical-record/Medication.ts";
+import { Treatment } from "../value-objects/medical-record/Treatment.ts";
 import { createTestRunner } from "../../testing/testOutput.ts";
 
 type PatientInput = ConstructorParameters<typeof Patient>[0];

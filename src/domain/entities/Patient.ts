@@ -1,10 +1,10 @@
-import type { AddressDTO } from "../shared/Address.ts";
-import { Allergy } from "./Allergy.ts";
+import type { AddressDTO } from "../value-objects/Address.ts";
+import { Allergy } from "../value-objects/Allergy.ts";
 import { Appointment } from "./Appointments.ts";
-import { Diagnoses } from "./record/Diagnosis.ts";
-import type { EmergencyContactDTO } from "../shared/EmergencyContact.ts";
+import { Diagnoses } from "../value-objects/medical-record/Diagnosis.ts";
+import type { EmergencyContactDTO } from "../value-objects/EmergencyContact.ts";
 import { Exam } from "./Exam.ts";
-import { MedicalRecord } from "./record/MedicalRecord.ts";
+import { MedicalRecord } from "../value-objects/medical-record/MedicalRecord.ts";
 
 interface PatientDTO {
   id: string;

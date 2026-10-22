@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { Exam } from "./Exam.ts";
+import { Exam } from "../../domain/entities/Exam.ts";
 import { ExamRepository } from "./ExamRepository.ts";
 import {
   createTestRunner,

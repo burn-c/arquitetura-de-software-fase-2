@@ -1,13 +1,13 @@
-import { Address } from "./src/domain/shared/Address.ts";
-import { Appointment } from "./src/domain/patient/Appointments.ts";
-import { Diagnoses } from "./src/domain/patient/record/Diagnosis.ts";
-import { Medication } from "./src/domain/patient/record/Medication.ts";
-import { Treatment } from "./src/domain/patient/record/Treatment.ts";
-import { EmergencyContact } from "./src/domain/shared/EmergencyContact.ts";
-import { Exam } from "./src/domain/patient/Exam.ts";
-import { Doctor } from "./src/domain/doctor/Doctor.ts";
-import { Patient } from "./src/domain/patient/Patient.ts";
-import { MedicalRecord } from "./src/domain/patient/record/MedicalRecord.ts";
+import { Address } from "../src/domain/value-objects/Address.ts";
+import { Appointment } from "../src/domain/entities/Appointments.ts";
+import { Diagnoses } from "../src/domain/value-objects/medical-record/Diagnosis.ts";
+import { Medication } from "../src/domain/value-objects/medical-record/Medication.ts";
+import { Treatment } from "../src/domain/value-objects/medical-record/Treatment.ts";
+import { EmergencyContact } from "../src/domain/value-objects/EmergencyContact.ts";
+import { Exam } from "../src/domain/entities/Exam.ts";
+import { Doctor } from "../src/domain/entities/Doctor.ts";
+import { Patient } from "../src/domain/entities/Patient.ts";
+import { MedicalRecord } from "../src/domain/value-objects/medical-record/MedicalRecord.ts";
 
 console.log("Welcome to the Patient Management System!");
 

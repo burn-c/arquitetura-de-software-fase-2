@@ -1,5 +1,5 @@
-import { Repository } from "../shared/PatientRepository.ts";
-import { Exam } from "./Exam.ts";
+import { Repository } from "../../domain/repositories/Repository.ts";
+import { Exam } from "../../domain/entities/Exam.ts";
 
 export class ExamRepository extends Repository {
   constructor() {

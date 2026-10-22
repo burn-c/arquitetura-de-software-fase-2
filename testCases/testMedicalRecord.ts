@@ -1,12 +1,12 @@
 import assert from "node:assert/strict";
-import { Address } from "./src/domain/shared/Address.ts";
-import { Diagnoses } from "./src/domain/patient/record/Diagnosis.ts";
-import { EmergencyContact } from "./src/domain/shared/EmergencyContact.ts";
-import { Medication } from "./src/domain/patient/record/Medication.ts";
-import { MedicalRecord } from "./src/domain/patient/record/MedicalRecord.ts";
-import { Treatment } from "./src/domain/patient/record/Treatment.ts";
-import { WorkingHours } from "./src/domain/doctor/WorkingHours.ts";
-import { createTestRunner } from "./src/testing/testOutput.ts";
+import { Address } from "../src/domain/value-objects/Address.ts";
+import { Diagnoses } from "../src/domain/value-objects/medical-record/Diagnosis.ts";
+import { EmergencyContact } from "../src/domain/value-objects/EmergencyContact.ts";
+import { Medication } from "../src/domain/value-objects/medical-record/Medication.ts";
+import { MedicalRecord } from "../src/domain/value-objects/medical-record/MedicalRecord.ts";
+import { Treatment } from "../src/domain/value-objects/medical-record/Treatment.ts";
+import { WorkingHours } from "../src/domain/value-objects/WorkingHours.ts";
+import { createTestRunner } from "../src/testing/testOutput.ts";
 
 type Content = {
   diagnoses?: Array<string>;

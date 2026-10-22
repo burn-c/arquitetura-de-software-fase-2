@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { Doctor } from "./Doctor.ts";
-import { DoctorRepository } from "./DoctorRepository.ts";
+import { Doctor } from "../entities/Doctor.ts";
+import { DoctorRepository } from "../../infrastructure/persistence/DoctorRepository.ts";
 import { DoctorService } from "./DoctorService.ts";
 import { createTestRunner } from "../../testing/testOutput.ts";
 
