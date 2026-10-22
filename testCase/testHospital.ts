@@ -8,6 +8,8 @@ import { Exam } from "../src/domain/entities/Exam.ts";
 import { Doctor } from "../src/domain/entities/Doctor.ts";
 import { Patient } from "../src/domain/entities/Patient.ts";
 import { MedicalRecord } from "../src/domain/value-objects/medical-record/MedicalRecord.ts";
+import { doctor, patient, appointment } from "./entities.ts";
+import { doctorService, patientService, appointmentService } from "./service.ts";
 
 console.log("Welcome to the Patient Management System!");
 
@@ -172,3 +174,12 @@ console.table([
     Value: `${value.name} (${value.dosage})`,
   })),
 ]);
+// Teste 2
+
+
+doctorService.addDoctor(doctor);
+doctorService.addDoctorWorkingHours(doctor.id, "Friday", "09:00 AM - 05:00 PM");
+
+patientService.addPatient(patient);
+
+appointmentService.execute(appointment);

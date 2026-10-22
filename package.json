@@ -4,12 +4,12 @@
   "description": "Pós Graduação Full-Stack com IA, resumos e anotações do curso de Arquitetura de Software.",
   "main": "index.js",
   "scripts": {
-    "domain": "for f in src/domain/*.ts; do node \"$f\"; done",
-    "hospital": "node testCases/testHospital.ts",
+    "domain": "node src/domain/entities/Appointments.ts && node src/domain/entities/Exam.ts && node src/domain/value-objects/medical-record/MedicalRecord.ts",
+    "hospital": "node testCase/testHospital.ts",
     "examples": "pnpm domain && pnpm hospital",
     "study": "node study_plan/server.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "node testCases/testMedicalRecord.ts && pnpm test:repositories && pnpm test:domain && pnpm test:services",
+    "test": "node testCase/testMedicalRecord.ts && pnpm test:repositories && pnpm test:domain && pnpm test:services",
     "test:repositories": "node src/infrastructure/persistence/DoctorRepository.test.ts && node src/infrastructure/persistence/AppointmentRepository.test.ts && node src/infrastructure/persistence/ExamRepository.test.ts && node src/infrastructure/persistence/PatientRepository.test.ts",
     "test:domain": "node src/domain/entities/Doctor.test.ts && node src/domain/value-objects/WorkingHours.test.ts && node src/domain/entities/Patient.test.ts",
     "test:services": "node src/domain/services/DoctorService.test.ts && node src/domain/services/ExamService.test.ts && node src/domain/services/PatientService.test.ts"
