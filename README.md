@@ -161,6 +161,9 @@ pnpm typecheck
 │   │       ├── DoctorRepository.ts
 │   │       ├── ExamRepository.ts
 │   │       └── PatientRepository.ts
+│   ├── interfaces/
+│   │   └── controllers/
+│   │       └── PatientController.ts    # Adaptador de entrada REST (Express)
 │   └── testing/
 │       └── testOutput.ts               # Runner e formatação dos testes
 ├── testCase/                           # Cenários executáveis
