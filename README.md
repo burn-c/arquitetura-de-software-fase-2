@@ -108,6 +108,9 @@ pnpm test
 
 # Verificação de tipos
 pnpm typecheck
+
+# Sobe a API HTTP (Express) em http://localhost:3000
+pnpm start
 ```
 
 > Os cenários de `testCase/` também podem ser executados individualmente, por
@@ -139,8 +142,11 @@ pnpm typecheck
 │   │   ├── repositories/
 │   │   │   └── Repository.ts           # Base em memória dos repositórios
 │   │   ├── services/                   # Serviços de domínio
-│   │   │   ├── DoctorAvailabilityService.ts
-│   │   │   ├── DoctorService.ts
+│   │   │   ├── doctor-services/        # Serviços do médico
+│   │   │   │   ├── DoctorAvailabilityService.ts
+│   │   │   │   ├── DoctorService.ts
+│   │   │   │   ├── DoctorSpecialtyService.ts
+│   │   │   │   └── DoctorWorkingHoursService.ts
 │   │   │   ├── ExamService.ts
 │   │   │   └── PatientService.ts
 │   │   └── value-objects/              # Objetos de valor
@@ -162,8 +168,15 @@ pnpm typecheck
 │   │       ├── ExamRepository.ts
 │   │       └── PatientRepository.ts
 │   ├── interfaces/
+│   │   ├── apiRouter.ts                # Montagem das rotas
 │   │   └── controllers/
-│   │       └── PatientController.ts    # Adaptador de entrada REST (Express)
+│   │       ├── PatientController.ts    # Adaptador de entrada REST (Express)
+│   │       └── doctor-controllers/
+│   │           ├── DoctorAvailabilityController.ts
+│   │           ├── DoctorController.ts
+│   │           ├── DoctorSpecialtyController.ts
+│   │           └── DoctorWorkingHoursController.ts
+│   ├── main.ts                         # Composition root e servidor Express
 │   └── testing/
 │       └── testOutput.ts               # Runner e formatação dos testes
 ├── testCase/                           # Cenários executáveis
