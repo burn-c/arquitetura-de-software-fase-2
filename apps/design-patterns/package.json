@@ -1,0 +1,8 @@
+{
+  "name": "design-patterns-examples",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "singleton": "node src/testLogger.js"
+  }
+}
