@@ -1,15 +1,5 @@
-
-class Caminhao {
-  entregar() {
-    console.log('Entrega realizada por caminhão!');
-  }
-}
-
-class Navio {
-  entregar() {
-    console.log('Entrega realizada por navio!');
-  }
-}
+const Caminhao = require("./transporte/Caminhao")
+const Navio = require("./transporte/Navio")
 
 const tipoDeTransporte = "caminhão"
 
