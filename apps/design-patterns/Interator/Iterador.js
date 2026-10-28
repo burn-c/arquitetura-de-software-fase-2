@@ -13,6 +13,15 @@ class Iterador {
     this.indice++;
     return item;
   }
+
+  hasPrevious() {
+    return this.indice > 0;
+  }
+
+  previous() {
+    this.indice--;
+    return this.colecao[this.indice];
+  }
 }
 
 module.exports = Iterador;
