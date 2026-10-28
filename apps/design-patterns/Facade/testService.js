@@ -16,10 +16,32 @@ class PushNotificationService {
   }
 }
 
-const emailService = new EmailService()
-const smsService = new SMSService()
-const pushService = new PushNotificationService()
+class NotificationFacade {
+  constructor() {
+    this.emailService = new EmailService()
+    this.smsService = new SMSService()
+    this.pushService = new PushNotificationService()
+  }
 
-emailService.sendMail('user@example.com', "Seu pedido foi enviado")
-smsService.sendSMS('+0123456789', "Seu pedido foi enviado")
-pushService.sendPushNotification('user123', "Seu pedido foi enviado")
+  sendNotification(type, to, message) {
+    switch (type) {
+      case 'email':
+        this.emailService.sendMail(to, message)
+        break
+      case 'sms':
+        this.smsService.sendSMS(to, message)
+        break
+      case 'push':
+        this.pushService.sendPushNotification(to, message)
+        break
+      default:
+        console.log('Tipo de notificação inválido!')
+    }
+  }
+}
+
+const notifier = new NotificationFacade()
+
+notifier.sendNotification('email', 'user@example.com', 'Seu pedido foi enviado!')
+notifier.sendNotification('sms', '+0123456789', 'Seu pedido foi enviado!')
+notifier.sendNotification('push', 'user123', 'Seu pedido foi enviado!')
