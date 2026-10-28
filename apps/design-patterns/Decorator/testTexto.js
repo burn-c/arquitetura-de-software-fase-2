@@ -1,31 +1,12 @@
-class Texto {
-  constructor(conteudo) {
-    this.conteudo = conteudo;
-  }
-  renderizar() {
-    return this.conteudo;
-  }
-}
-class TextoNegrito extends Texto {
-  renderizar() {
-    return `<b>${super.renderizar()}</b>`
-  }
-}
-class TextoItalico extends Texto {
-  renderizar() {
-    return `<i>${super.renderizar()}</i>`
-  }
-}
-class TextoSublinhado extends Texto {
-  renderizar() {
-    return `<u>${super.renderizar()}</u>`
-  }
-}
-class TextoItalicoNegrito extends Texto {
-  renderizar() {
-    return `<i><b>${super.renderizar()}</b></i>`
-  }
-}
-let texto = new TextoItalicoNegrito("Hello, Rocket!")
-texto = new TextoNegrito(texto)
+const Texto = require("./Texto");
+const NegritoDecorator = require("./NegritoDecorator");
+const ItalicoDecorator = require("./ItalicoDecorator");
+const SublinhadoDecorator = require("./SublinhadoDecorator");
+
+let texto = new Texto("Hello, Rocket!")
+
+texto = new NegritoDecorator(new ItalicoDecorator(texto))
+
+texto = new SublinhadoDecorator(texto)
+
 console.log(texto.renderizar())
