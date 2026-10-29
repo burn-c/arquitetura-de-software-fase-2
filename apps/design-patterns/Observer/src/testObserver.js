@@ -1,23 +1,15 @@
-class Loja {
-  constructor() {
-    this.produtoDisponivel = false;
-  }
-
-  notificarClientes() {
-    if (this.produtoDisponivel) {
-      console.log("Notificando clientes sobre chegada de produto!");
-      console.log("Cliente A: Produto disponível!");
-      console.log("Cliente B: Produto disponível!");
-    }
-  }
-
-  receberNovoProduto() {
-    console.log("O produto chegou à loja!");
-    this.produtoDisponivel = true;
-    this.notificarClientes();
-  }
-}
+const Cliente = require('./models/ConcreteObserver');
+const Loja = require('./models/ConcreteSubject');
 
 const loja = new Loja();
+const clienteA = new Cliente('Carlos');
+const clienteB = new Cliente('Ana');
+const clienteC = new Cliente('Beto');
 
-loja.notificarClientes()
+loja.adicionarObserver(clienteA);
+loja.adicionarObserver(clienteB);
+loja.adicionarObserver(clienteC);
+
+loja.removerObserver(clienteA);
+
+loja.receberNovoProduto('PlayStation 5');
