@@ -3,6 +3,7 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "singleton": "node Singleton/testLogger.js"
+    "singleton": "node Singleton/testLogger.js",
+    "navegacao": "node Strategy/projeto-navegacao/testNavegador.js"
   }
 }
