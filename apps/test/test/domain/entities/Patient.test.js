@@ -46,10 +46,31 @@ describe("Patient Entity", () => {
         birthDate: "2005-10-05",
       });
 
-      expect(patient.birthDate.getUTCFullYear()).to.equal(2005);
-      expect(patient.birthDate.getUTCMonth() + 1).to.equal(10);
-      expect(patient.birthDate.getUTCDate()).to.equal(5);
+      expect(patient.birthDate.getFullYear()).to.equal(2005);
+      expect(patient.birthDate.getMonth() + 1).to.equal(10);
+      expect(patient.birthDate.getDate()).to.equal(5);
       clock.restore();
+    });
+
+    it("should keep a Date instance given as birthDate", () => {
+      const birthDate = new Date(2005, 9, 5);
+      const patient = new Patient({ ...defaultPatientData, birthDate });
+
+      expect(patient.birthDate).to.deep.equal(birthDate);
+      expect(patient.birthDate).to.not.equal(birthDate);
+    });
+
+    it("should respect a birthDate that already carries a time", () => {
+      const patient = new Patient({
+        ...defaultPatientData,
+        birthDate: "2005-10-05T12:30:00",
+      });
+
+      expect(patient.birthDate.getFullYear()).to.equal(2005);
+      expect(patient.birthDate.getMonth() + 1).to.equal(10);
+      expect(patient.birthDate.getDate()).to.equal(5);
+      expect(patient.birthDate.getHours()).to.equal(12);
+      expect(patient.birthDate.getMinutes()).to.equal(30);
     });
 
     it("should initialize with a new MedicalRecord instance", () => {

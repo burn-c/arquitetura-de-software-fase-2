@@ -1,5 +1,18 @@
 import { MedicalRecord } from "../value-objects/medical-record/MedicalRecord.js";
 
+// Datas sem hora ("AAAA-MM-DD") são interpretadas como meia-noite UTC pelo
+// JavaScript, o que desloca o dia no fuso local. Aqui elas viram meia-noite
+// local, preservando a data de nascimento informada.
+const parseBirthDate = (value) => {
+  if (value instanceof Date) {
+    return new Date(value.getTime());
+  }
+  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return new Date(`${value}T00:00:00`);
+  }
+  return new Date(value);
+};
+
 export class Patient {
   #id;
   #identificationDocument;
@@ -26,7 +39,7 @@ export class Patient {
   }) {
     this.#identificationDocument = identificationDocument;
     this.#name = name;
-    this.#birthDate = new Date(birthDate);
+    this.#birthDate = parseBirthDate(birthDate);
     this.#gender = gender;
     this.#bloodType = bloodType;
     this.#address = address;
