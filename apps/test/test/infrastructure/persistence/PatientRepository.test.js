@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import sinon from "sinon";
 import { PatientRepository } from "../../../src/infrastructure/persistence/PatientRepository.js";
+import { Patient } from "../../../src/domain/entities/Patient.js";
 
 describe("PatientRepository", () => {
   let patientRepository;
@@ -93,5 +94,66 @@ describe("PatientRepository", () => {
     patientRepository.delete(1);
 
     sinon.assert.calledWith(deleteStub, 1);
+  });
+});
+
+describe("PatientRepository storage", () => {
+  let repository;
+
+  const buildPatient = (overrides = {}) =>
+    new Patient({
+      identificationDocument: "12345678901",
+      name: "John Doe",
+      birthDate: "1990-01-01",
+      gender: "male",
+      bloodType: "A+",
+      address: {},
+      phone: "555-1234",
+      email: "john@example.com",
+      emergencyContact: {},
+      ...overrides,
+    });
+
+  beforeEach(() => {
+    repository = new PatientRepository();
+  });
+
+  it("should assign sequential IDs and store the patient itself", () => {
+    const first = buildPatient();
+    const second = buildPatient({ name: "Jane Doe" });
+
+    expect(repository.add(first)).to.equal(1);
+    expect(repository.add(second)).to.equal(2);
+
+    expect(first.id).to.equal(1);
+    expect(repository.findById(1)).to.equal(first);
+    expect(repository.findAll()).to.have.lengthOf(2);
+  });
+
+  it("should refuse anything that is not a patient", () => {
+    expect(() => repository.add({ name: "John Doe" })).to.throw(
+      "Can only add Patient instances"
+    );
+  });
+
+  it("should find patients by name", () => {
+    repository.add(buildPatient({ name: "Alice" }));
+    repository.add(buildPatient({ name: "Bob" }));
+    repository.add(buildPatient({ name: "Alice" }));
+
+    const found = repository.findByName("Alice");
+
+    expect(found).to.have.lengthOf(2);
+    expect(found.map((patient) => patient.id)).to.deep.equal([1, 3]);
+  });
+
+  it("should find patients by blood type", () => {
+    repository.add(buildPatient({ name: "Alice", bloodType: "O-" }));
+    repository.add(buildPatient({ name: "Bob", bloodType: "A+" }));
+
+    const found = repository.findByBloodType("O-");
+
+    expect(found).to.have.lengthOf(1);
+    expect(found[0].name).to.equal("Alice");
   });
 });

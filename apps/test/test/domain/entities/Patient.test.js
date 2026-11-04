@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import sinon from "sinon";
-import { Patient } from "../../../src/domain/entities/Patient.js";
+import { Patient, addPatient } from "../../../src/domain/entities/Patient.js";
 import { Address } from "../../../src/domain/value-objects/Address.js";
 import { EmergencyContact } from "../../../src/domain/value-objects/EmergencyContact.js";
 
@@ -81,6 +81,55 @@ describe("Patient Entity", () => {
       const returnedRecord = patient.medicalRecord;
 
       expect(returnedRecord).to.not.equal(originalRecord);
+    });
+  });
+
+  describe("Setters", () => {
+    let patient;
+
+    beforeEach(() => {
+      patient = new Patient(defaultPatientData);
+    });
+
+    it("should update the name", () => {
+      patient.name = "Jane Doe";
+      expect(patient.name).to.equal("Jane Doe");
+    });
+
+    it("should update the phone", () => {
+      patient.phone = "555-9999";
+      expect(patient.phone).to.equal("555-9999");
+    });
+
+    it("should update the email", () => {
+      patient.email = "jane@example.com";
+      expect(patient.email).to.equal("jane@example.com");
+    });
+
+    it("should update the emergency contact", () => {
+      const contact = new EmergencyContact("Mary Doe", "555-0000");
+      patient.emergencyContact = contact;
+      expect(patient.emergencyContact).to.equal(contact);
+    });
+
+    it("should update the address", () => {
+      const address = new Address("456 Elm St", 20, "Shelbyville", "IL", "54321");
+      patient.address = address;
+      expect(patient.address).to.equal(address);
+    });
+
+    it("should expose the id assigned by the repository", () => {
+      patient._setId(7);
+      expect(patient.id).to.equal(7);
+    });
+  });
+
+  describe("addPatient factory", () => {
+    it("should build a patient from the given data", () => {
+      const patient = addPatient(defaultPatientData);
+
+      expect(patient).to.be.instanceOf(Patient);
+      expect(patient.name).to.equal("John Doe");
     });
   });
 });

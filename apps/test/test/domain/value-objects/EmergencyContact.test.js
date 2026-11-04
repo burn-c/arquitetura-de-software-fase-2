@@ -14,4 +14,24 @@ describe("EmergencyContact", () => {
       "Emergency contact must have a name and phone number"
     );
   });
+
+  it("should be equal when name and phone match", () => {
+    const contact = new EmergencyContact("Jane Doe", "555-1234");
+
+    expect(contact.equals(new EmergencyContact("Jane Doe", "555-1234"))).to.be
+      .true;
+  });
+
+  it("should not be equal when the phone differs", () => {
+    const contact = new EmergencyContact("Jane Doe", "555-1234");
+
+    expect(contact.equals(new EmergencyContact("Jane Doe", "555-9999"))).to.be
+      .false;
+  });
+
+  it("should not be equal when compared to another kind of object", () => {
+    const contact = new EmergencyContact("Jane Doe", "555-1234");
+
+    expect(contact.equals({ name: "Jane Doe", phone: "555-1234" })).to.be.false;
+  });
 });

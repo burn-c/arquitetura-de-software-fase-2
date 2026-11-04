@@ -145,4 +145,190 @@ describe("PatientController", () => {
       expect(res.json.calledWith(updatedPatient)).to.be.true;
     });
   });
+
+  describe("getAllPatients", () => {
+    it("should return every patient with 200", async () => {
+      const req = {};
+      const res = {
+        status: sandbox.stub().returnsThis(),
+        json: sandbox.stub(),
+      };
+      const patients = [new Patient(mockPatientData)];
+
+      patientService.findAllPatients.resolves(patients);
+
+      await patientController.getAllPatients(req, res);
+
+      expect(res.status.calledWith(200)).to.be.true;
+      expect(res.json.calledWith(patients)).to.be.true;
+    });
+
+    it("should return 500 when the service fails", async () => {
+      const req = {};
+      const res = {
+        status: sandbox.stub().returnsThis(),
+        json: sandbox.stub(),
+      };
+
+      patientService.findAllPatients.rejects(new Error("Database is down"));
+
+      await patientController.getAllPatients(req, res);
+
+      expect(res.status.calledWith(500)).to.be.true;
+      expect(res.json.calledWith({ error: "Database is down" })).to.be.true;
+    });
+  });
+
+  describe("getPatientByName", () => {
+    it("should return the patients found with 200", async () => {
+      const req = { params: { name: "John Doe" } };
+      const res = {
+        status: sandbox.stub().returnsThis(),
+        json: sandbox.stub(),
+      };
+      const patients = [new Patient(mockPatientData)];
+
+      patientService.findPatientByName.resolves(patients);
+
+      await patientController.getPatientByName(req, res);
+
+      expect(patientService.findPatientByName.calledWith("John Doe")).to.be
+        .true;
+      expect(res.status.calledWith(200)).to.be.true;
+      expect(res.json.calledWith(patients)).to.be.true;
+    });
+
+    it("should return 404 when nobody matches the name", async () => {
+      const req = { params: { name: "Nobody" } };
+      const res = {
+        status: sandbox.stub().returnsThis(),
+        json: sandbox.stub(),
+      };
+
+      patientService.findPatientByName.resolves([]);
+
+      await patientController.getPatientByName(req, res);
+
+      expect(res.status.calledWith(404)).to.be.true;
+      expect(
+        res.json.calledWith({
+          error: "No patients found with the given name",
+        })
+      ).to.be.true;
+    });
+
+    it("should return 500 when the service fails", async () => {
+      const req = { params: { name: "John Doe" } };
+      const res = {
+        status: sandbox.stub().returnsThis(),
+        json: sandbox.stub(),
+      };
+
+      patientService.findPatientByName.rejects(new Error("Database is down"));
+
+      await patientController.getPatientByName(req, res);
+
+      expect(res.status.calledWith(500)).to.be.true;
+    });
+  });
+
+  describe("getPatientByBloodType", () => {
+    it("should return the patients found with 200", async () => {
+      const req = { params: { bloodType: "A+" } };
+      const res = {
+        status: sandbox.stub().returnsThis(),
+        json: sandbox.stub(),
+      };
+      const patients = [new Patient(mockPatientData)];
+
+      patientService.findPatientByBloodType.resolves(patients);
+
+      await patientController.getPatientByBloodType(req, res);
+
+      expect(patientService.findPatientByBloodType.calledWith("A+")).to.be.true;
+      expect(res.status.calledWith(200)).to.be.true;
+      expect(res.json.calledWith(patients)).to.be.true;
+    });
+
+    it("should return 404 when nobody matches the blood type", async () => {
+      const req = { params: { bloodType: "AB-" } };
+      const res = {
+        status: sandbox.stub().returnsThis(),
+        json: sandbox.stub(),
+      };
+
+      patientService.findPatientByBloodType.resolves([]);
+
+      await patientController.getPatientByBloodType(req, res);
+
+      expect(res.status.calledWith(404)).to.be.true;
+      expect(
+        res.json.calledWith({
+          error: "No patients found with the given blood type",
+        })
+      ).to.be.true;
+    });
+  });
+
+  describe("error handling", () => {
+    it("should return 400 when creating a patient fails", async () => {
+      const req = { body: mockPatientData };
+      const res = {
+        status: sandbox.stub().returnsThis(),
+        json: sandbox.stub(),
+      };
+
+      patientService.addPatient.rejects(new Error("Invalid patient"));
+
+      await patientController.createPatient(req, res);
+
+      expect(res.status.calledWith(400)).to.be.true;
+      expect(res.json.calledWith({ error: "Invalid patient" })).to.be.true;
+    });
+
+    it("should return 500 when the lookup by id fails", async () => {
+      const req = { params: { id: "1" } };
+      const res = {
+        status: sandbox.stub().returnsThis(),
+        json: sandbox.stub(),
+      };
+
+      patientService.findPatientById.rejects(new Error("Database is down"));
+
+      await patientController.getPatientById(req, res);
+
+      expect(res.status.calledWith(500)).to.be.true;
+    });
+
+    it("should return 400 when updating a patient fails", async () => {
+      const req = { params: { id: "1" }, body: { name: "Jane" } };
+      const res = {
+        status: sandbox.stub().returnsThis(),
+        json: sandbox.stub(),
+      };
+
+      patientService.updatePatient.rejects(new Error("Patient not Found!"));
+
+      await patientController.updatePatient(req, res);
+
+      expect(res.status.calledWith(400)).to.be.true;
+      expect(res.json.calledWith({ error: "Patient not Found!" })).to.be.true;
+    });
+
+    it("should return 500 when the lookup by blood type fails", async () => {
+      const req = { params: { bloodType: "A+" } };
+      const res = {
+        status: sandbox.stub().returnsThis(),
+        json: sandbox.stub(),
+      };
+
+      patientService.findPatientByBloodType.rejects(
+        new Error("Database is down")
+      );
+
+      await patientController.getPatientByBloodType(req, res);
+
+      expect(res.status.calledWith(500)).to.be.true;
+    });
+  });
 });
