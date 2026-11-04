@@ -1,6 +1,6 @@
 
-const soma = require("../src/calculadora")
-const expect = require("chai").expect;
+import { expect } from "chai";
+import { soma } from "../src/calculadora.js";
 
 describe('Função Soma', () => {
   it("deve retornar a soma de dois números", () => {

@@ -12,4 +12,4 @@ function fetchDataPromise() {
   });
 }
 
-module.exports = { fetchData, fetchDataPromise };
+export { fetchData, fetchDataPromise };

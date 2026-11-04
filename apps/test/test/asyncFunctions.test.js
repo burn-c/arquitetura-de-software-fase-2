@@ -1,5 +1,5 @@
-const { fetchData, fetchDataPromise } = require('../src/asyncFunctions');
-const { expect } = require('chai');
+import { expect } from "chai";
+import { fetchData, fetchDataPromise } from "../src/asyncFunctions.js";
 
 describe('Função fetchData com async/await', () => {
   it('deve retornar "dados recebidos"', async () => {
